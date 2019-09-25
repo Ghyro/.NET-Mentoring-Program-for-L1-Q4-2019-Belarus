@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Potestas.Observations
 {
@@ -21,14 +22,14 @@ namespace Potestas.Observations
     */
     public struct FlashObservation : IEnergyObservation
     {
-        public Coordinates ObservationPoint { get; }
+        public Coordinates ObservationPoint { get; set; }
 
         public double Intensity { get; }
 
-        public int DurationMs { get; }
+        public int DurationMs { get; set; }
 
-        public DateTime ObservationTime { get; }
+        public DateTime ObservationTime { get; set; }
 
-        public double EstimatedValue => throw new NotImplementedException();
+        public double EstimatedValue { get; set; }
     }
 }
