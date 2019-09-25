@@ -80,14 +80,16 @@ namespace Potestas.Tests.Comparers
             var flashObservation1 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
-                EstimatedValue = 2.0,
+                DurationMs = 2,
+                Intensity = 2,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
             var flashObservation2 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
-                EstimatedValue = 10.0,
+                DurationMs = 10,
+                Intensity = 10,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
