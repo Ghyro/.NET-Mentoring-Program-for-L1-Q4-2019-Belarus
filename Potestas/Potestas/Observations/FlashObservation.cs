@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Potestas.Observations
 {
@@ -22,14 +21,80 @@ namespace Potestas.Observations
     */
     public struct FlashObservation : IEnergyObservation
     {
+        private const int MAX_INTENSITY = 2000000000;
+        private double _intensity;
+        private double _estimatedValue;
+        private int _durationMs;
+        private DateTime _observationTime;
+
+        public FlashObservation(DateTime observationTime) : this()
+        {
+            ObservationTime = observationTime;
+        }
+
         public Coordinates ObservationPoint { get; set; }
 
-        public double Intensity { get; }
+        public double Intensity
+        {
+            get => _intensity;
+            set
+            {
+                if (value > MAX_INTENSITY || value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                _intensity = value;
+            }
+        }
 
-        public int DurationMs { get; set; }
+        public int DurationMs
+        {
+            get => _durationMs;
+            set => _durationMs = value;
+        }
 
-        public DateTime ObservationTime { get; set; }
+        public DateTime ObservationTime
+        {
+            get => _observationTime;
+            set => _observationTime = value;
+        }
 
-        public double EstimatedValue { get; set; }
+        public double EstimatedValue
+        {
+            get => _estimatedValue;
+            set
+            {
+                if (value < 0 )
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                _estimatedValue = value;
+                _estimatedValue = _intensity * _durationMs;
+            }
+        }
+
+        public override string ToString()
+        {
+            return
+                $"ObservationPoint X - Y: {ObservationPoint.X.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}" +
+                $" - {ObservationPoint.Y.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}," +
+                $" Intensity: {_intensity}, Duration ms: {_intensity}," +
+                $" Observation time: {_observationTime.Date:MM/dd/yyyy}, Estimated value: {_estimatedValue}";
+        }
+
+        public bool Equals(FlashObservation other)
+        {
+            return
+                ObservationPoint.Equals(other.ObservationPoint)
+                && ObservationTime.Equals(other._observationTime)
+                && EstimatedValue.Equals(other._estimatedValue);
+        }
+
+        public static bool operator ==(FlashObservation flashObservation1, FlashObservation flashObservation2)
+        {
+            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) &&
+                   flashObservation1._estimatedValue.Equals(flashObservation2._estimatedValue);
+        }
+
+        public static bool operator !=(FlashObservation flashObservation1, FlashObservation flashObservation2)
+        {
+            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) || !flashObservation1._estimatedValue.Equals(flashObservation2._estimatedValue);
+        }
     }
 }
