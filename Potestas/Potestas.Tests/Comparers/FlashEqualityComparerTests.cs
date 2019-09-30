@@ -16,14 +16,12 @@ namespace Potestas.Tests.Comparers
         private static readonly IEnergyObservation FlashObservation1 = new FlashObservation
         {
             ObservationPoint = new Coordinates { X = 3.0, Y = 0.5 },
-            EstimatedValue = 2.5,
             ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
         };
 
         private static readonly IEnergyObservation FlashObservation2 = new FlashObservation
         {
             ObservationPoint = new Coordinates { X = 1.5, Y = 0.3 },
-            EstimatedValue = 2.0,
             ObservationTime = new DateTime(2008, DateTime.Today.Month, DateTime.Today.Day)
         };
 

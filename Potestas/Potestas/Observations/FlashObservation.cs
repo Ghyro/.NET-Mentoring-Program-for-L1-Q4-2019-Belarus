@@ -23,7 +23,6 @@ namespace Potestas.Observations
     {
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
-        private double _estimatedValue;
         private int _durationMs;
         private DateTime _observationTime;
 
@@ -57,17 +56,7 @@ namespace Potestas.Observations
             set => _observationTime = value;
         }
 
-        public double EstimatedValue
-        {
-            get => _estimatedValue;
-            set
-            {
-                if (value < 0 )
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                _estimatedValue = value;
-                _estimatedValue = _intensity * _durationMs;
-            }
-        }
+        public double EstimatedValue => _intensity * _durationMs;
 
         public override string ToString()
         {
@@ -75,7 +64,7 @@ namespace Potestas.Observations
                 $"ObservationPoint X - Y: {ObservationPoint.X.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}" +
                 $" - {ObservationPoint.Y.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}," +
                 $" Intensity: {_intensity}, Duration ms: {_intensity}," +
-                $" Observation time: {_observationTime.Date:MM/dd/yyyy}, Estimated value: {_estimatedValue}";
+                $" Observation time: {_observationTime.Date:MM/dd/yyyy}, Estimated value: {EstimatedValue}";
         }
 
         public bool Equals(FlashObservation other)
@@ -83,18 +72,18 @@ namespace Potestas.Observations
             return
                 ObservationPoint.Equals(other.ObservationPoint)
                 && ObservationTime.Equals(other._observationTime)
-                && EstimatedValue.Equals(other._estimatedValue);
+                && EstimatedValue.Equals(other.EstimatedValue);
         }
 
         public static bool operator ==(FlashObservation flashObservation1, FlashObservation flashObservation2)
         {
             return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) &&
-                   flashObservation1._estimatedValue.Equals(flashObservation2._estimatedValue);
+                   flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
         }
 
         public static bool operator !=(FlashObservation flashObservation1, FlashObservation flashObservation2)
         {
-            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) || !flashObservation1._estimatedValue.Equals(flashObservation2._estimatedValue);
+            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) || !flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
         }
     }
 }

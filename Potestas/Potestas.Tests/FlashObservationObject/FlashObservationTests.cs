@@ -21,14 +21,12 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
                 DurationMs = 24,
                 Intensity = 24,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
             // Act
             flashObservation.DurationMs = duration;
             flashObservation.Intensity = intensity;
-            flashObservation.EstimatedValue = estimatedValue;
 
             // Assert
             Assert.AreEqual(flashObservation.EstimatedValue, expected);
@@ -44,7 +42,6 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates {X = 1.0, Y = 1.0},
                 DurationMs = 24,
                 Intensity = parameter,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             });
         }
@@ -58,7 +55,6 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
                 DurationMs = 24,
                 Intensity = 24,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
@@ -67,7 +63,6 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
                 DurationMs = 24,
                 Intensity = 24,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
@@ -87,7 +82,6 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates { X = 2.0, Y = 2.0 },
                 DurationMs = 32,
                 Intensity = 32,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
@@ -96,7 +90,6 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
                 DurationMs = 24,
                 Intensity = 24,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
@@ -116,11 +109,15 @@ namespace Potestas.Tests.FlashObservationObject
                 ObservationPoint = new Coordinates { X = 2.0, Y = 2.0 },
                 DurationMs = 10,
                 Intensity = 10,
-                EstimatedValue = 0.0,
                 ObservationTime = new DateTime(2019, DateTime.Today.Month, DateTime.Today.Day)
             };
 
-            const string expectedResult = "ObservationPoint X - Y: 2.0 - 2.0, Intensity: 10, Duration ms: 10, Observation time: 09/25/2019, Estimated value: 100";
+            var month = DateTime.Now.Month.ToString("d2");
+            var day = DateTime.Now.Day.ToString();
+            var year = DateTime.UtcNow.Year.ToString();
+
+            var expectedResult = "ObservationPoint X - Y: 2.0 - 2.0, Intensity: 10, Duration ms: 10," +
+                                 $" Observation time: {month}/{day}/{year}, Estimated value: {flashObservation.EstimatedValue}";
 
             // Act
             var result = flashObservation.ToString();

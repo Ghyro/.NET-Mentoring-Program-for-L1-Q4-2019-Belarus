@@ -16,21 +16,18 @@ namespace Potestas.Tests.Comparers
             var flashObservation1 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
-                EstimatedValue = 2.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
             var flashObservation2 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
-                EstimatedValue = 1.0,
                 ObservationTime = new DateTime(2008, DateTime.Today.Month, DateTime.Today.Day)
             };
 
             var flashObservation3 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 3.0, Y = 3.0 },
-                EstimatedValue = 3.0,
                 ObservationTime = new DateTime(2010, DateTime.Today.Month, DateTime.Today.Day)
             };
 
@@ -51,14 +48,12 @@ namespace Potestas.Tests.Comparers
             var flashObservation1 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
-                EstimatedValue = 2.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
             var flashObservation2 = new FlashObservation
             {
                 ObservationPoint = new Coordinates { X = 1.0, Y = 1.0 },
-                EstimatedValue = 2.0,
                 ObservationTime = new DateTime(2009, DateTime.Today.Month, DateTime.Today.Day)
             };
 
