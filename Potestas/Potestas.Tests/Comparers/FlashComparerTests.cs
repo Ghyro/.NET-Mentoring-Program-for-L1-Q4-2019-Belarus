@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Potestas.Comparators;
+using Potestas.Interfaces;
 using Potestas.Observations;
 
 namespace Potestas.Tests.Comparers

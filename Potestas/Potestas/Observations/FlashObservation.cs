@@ -1,4 +1,5 @@
 ﻿using System;
+using Potestas.Interfaces;
 
 namespace Potestas.Observations
 {
@@ -84,6 +85,24 @@ namespace Potestas.Observations
         public static bool operator !=(FlashObservation flashObservation1, FlashObservation flashObservation2)
         {
             return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) || !flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is FlashObservation && Equals((FlashObservation)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = _intensity.GetHashCode();
+                hashCode = (hashCode * 397) ^ _durationMs;
+                hashCode = (hashCode * 397) ^ _observationTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ ObservationPoint.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }

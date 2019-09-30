@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Potestas.Interfaces;
 
 namespace Potestas.Sources
 {
@@ -9,7 +10,7 @@ namespace Potestas.Sources
      * 1. Implement both IEnergyObservationSource and IEnergyObservationSourceEventSource interfaces.
      * 2. Try to implement it with abstract class or delegate parameters to make it universal.
      */
-    public class RandomEnergySource : IEnergyObservationSource
+    public class RandomEnergySource : IEnergyObservationSource, IEnergyObservationEventSource
     {
         public string Description => throw new NotImplementedException();
 
@@ -22,5 +23,9 @@ namespace Potestas.Sources
         {
             throw new NotImplementedException();
         }
+
+        public event EventHandler<IEnergyObservation> NewValueObserved;
+        public event EventHandler<Exception> ObservationError;
+        public event EventHandler ObservationEnd;
     }
 }

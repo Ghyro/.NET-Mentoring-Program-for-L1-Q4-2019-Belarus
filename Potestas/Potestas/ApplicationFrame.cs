@@ -3,60 +3,15 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Potestas.Interfaces;
 
 namespace Potestas
 {
     /* TASK. Try to refactor this code and add proper exception handling
      * 
      */
-    public enum SourceStatus
-    {
-        Pending,
-        Running,
-        Completed,
-        Failed
-    }
 
-    public interface ISourceRegistration
-    {
-        SourceStatus Status { get; }
-
-        IReadOnlyCollection<IProcessingGroup> ProcessingUnits { get; }
-
-        Task Start();
-
-        void Stop();
-
-        void Unregister();
-
-        IProcessingGroup AttachProcessingGroup(IProcessingFactory factory);
-    }
-
-    public interface IProcessingGroup
-    {
-        IEnergyObservationProcessor Processor { get; }
-
-        IEnergyObservationStorage Storage { get; }
-
-        IEnergyObservationAnalizer Analizer { get; }
-
-        void Detach();
-    }
-
-    public interface IEnergyObservationApplicationModel
-    {
-        IReadOnlyCollection<ISourceFactory> SourceFactories { get; }
-
-        IReadOnlyCollection<IProcessingFactory> ProcessingFactories { get; }
-
-        IReadOnlyCollection<ISourceRegistration> RegisteredSources { get; }
-
-        void LoadPlugin(Assembly assembly);
-
-        ISourceRegistration CreateAndRegisterSource(ISourceFactory factory);
-    }
-
-    class RegisteredSourceProcessingGroup : IProcessingGroup
+    internal class RegisteredSourceProcessingGroup : IProcessingGroup
     {
         private readonly RegisteredEnergyObservationSourceWrapper _sourceRegistration;
         private readonly IDisposable _processorSubscription;
@@ -84,7 +39,7 @@ namespace Potestas
         }
     }
 
-    class RegisteredEnergyObservationSourceWrapper : ISourceRegistration, IEnergyObservationProcessor
+    internal class RegisteredEnergyObservationSourceWrapper : ISourceRegistration, IEnergyObservationProcessor
     {
         private readonly ApplicationFrame _app;
         private readonly IEnergyObservationSource _inner;
@@ -150,7 +105,7 @@ namespace Potestas
 
     public sealed class ApplicationFrame : IEnergyObservationApplicationModel
     {
-        private readonly static FactoriesLoader _factoriesLoader = new FactoriesLoader();
+        private static readonly FactoriesLoader _factoriesLoader = new FactoriesLoader();
 
         private readonly List<ISourceFactory> _sourceFactories;
         private readonly List<IProcessingFactory> _processingFactories;

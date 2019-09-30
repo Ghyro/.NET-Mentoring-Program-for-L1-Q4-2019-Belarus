@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Potestas
+namespace Potestas.Interfaces
 {
     /* TASK. Refactor this interface to avoid boxing and unboxing specific issues. Use generics and contrvariant approach.
      * QUESTIONS:

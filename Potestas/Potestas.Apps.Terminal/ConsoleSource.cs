@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Potestas.Interfaces;
 
 namespace Potestas.Apps.Terminal
 {

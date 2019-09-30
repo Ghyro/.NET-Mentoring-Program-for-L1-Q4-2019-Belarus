@@ -1,10 +1,11 @@
 ﻿using Potestas.Analizers;
 using Potestas.Storages;
 using System;
+using Potestas.Interfaces;
 
 namespace Potestas.Apps.Terminal
 {
-    static class Program
+    internal static class Program
     {
         private static readonly IEnergyObservationApplicationModel _app;
         private static ISourceRegistration _testRegistration;
@@ -14,7 +15,7 @@ namespace Potestas.Apps.Terminal
             _app = new ApplicationFrame();
         }
 
-        static void Main()
+        private static void Main()
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
@@ -30,7 +31,7 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    class ConsoleSourceFactory : ISourceFactory
+    internal class ConsoleSourceFactory : ISourceFactory
     {
         public IEnergyObservationEventSource CreateEventSource()
         {
@@ -43,7 +44,7 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    class ConsoleProcessingFactory : IProcessingFactory
+    internal class ConsoleProcessingFactory : IProcessingFactory
     {
         public IEnergyObservationAnalizer CreateAnalizer()
         {

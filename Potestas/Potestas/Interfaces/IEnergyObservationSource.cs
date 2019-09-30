@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Potestas
+namespace Potestas.Interfaces
 {
     /* TASK. Refactor these interfaces to avoid boxing and unboxing specific issues
      * QUESTIONS:

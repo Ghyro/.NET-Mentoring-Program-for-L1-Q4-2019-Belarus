@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Potestas
+namespace Potestas.Interfaces
 {
     public interface IEnergyObservationAnalizer
     {

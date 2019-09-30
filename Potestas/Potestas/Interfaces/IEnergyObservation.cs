@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Potestas
+namespace Potestas.Interfaces
 {
     /* TASK. Make this interface more usable:
      * 1. Several observations could be compared by ObservationPoint, EstimatedValue and ObservationTime.

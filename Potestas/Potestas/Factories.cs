@@ -1,4 +1,6 @@
-﻿namespace Potestas
+﻿using Potestas.Interfaces;
+
+namespace Potestas
 {
     /* TASK. Refactor these interfaces to create families of IObserver, IObservable and IObservationsRepository as a single responsibility. 
      * QUESTIONS:

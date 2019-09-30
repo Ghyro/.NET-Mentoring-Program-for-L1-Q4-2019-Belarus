@@ -1,8 +1,9 @@
 ﻿using System;
+using Potestas.Interfaces;
 
 namespace Potestas.Apps.Terminal
 {
-    class ConsoleProcessor : IEnergyObservationProcessor
+    internal class ConsoleProcessor : IEnergyObservationProcessor
     {
         public string Description => "Logs all observations to console";
 

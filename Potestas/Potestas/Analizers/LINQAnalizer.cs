@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Potestas.Interfaces;
 
 namespace Potestas.Analizers
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Potestas
+namespace Potestas.Interfaces
 {
     /// <summary>
     /// 

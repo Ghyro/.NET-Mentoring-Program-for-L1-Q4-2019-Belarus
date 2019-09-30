@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Potestas.Comparators;
+using Potestas.Interfaces;
 using Potestas.Observations;
 
 namespace Potestas.Tests.Comparers
@@ -10,7 +11,6 @@ namespace Potestas.Tests.Comparers
     public class FlashEqualityComparerTests
     {
         private static readonly FlashEqualityComparer EqualityComparer = new FlashEqualityComparer();
-
         private static readonly Dictionary<IEnergyObservation, string> FlashObservarions = new Dictionary<IEnergyObservation, string>(EqualityComparer);
 
         private static readonly IEnergyObservation FlashObservation1 = new FlashObservation
