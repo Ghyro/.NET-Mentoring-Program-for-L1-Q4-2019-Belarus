@@ -10,7 +10,7 @@ namespace Potestas.Tests.Comparers
     [TestFixture]
     public class FlashEqualityComparerTests
     {
-        private static readonly FlashEqualityComparer EqualityComparer = new FlashEqualityComparer();
+        private static readonly EnergyObservationEqualityComparer EqualityComparer = new EnergyObservationEqualityComparer();
         private static readonly Dictionary<IEnergyObservation, string> FlashObservarions = new Dictionary<IEnergyObservation, string>(EqualityComparer);
 
         private static readonly IEnergyObservation FlashObservation1 = new FlashObservation

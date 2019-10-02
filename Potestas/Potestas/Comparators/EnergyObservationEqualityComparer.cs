@@ -3,7 +3,7 @@ using Potestas.Interfaces;
 
 namespace Potestas.Comparators
 {
-    public class FlashEqualityComparer : IEqualityComparer<IEnergyObservation>
+    public class EnergyObservationEqualityComparer : IEqualityComparer<IEnergyObservation>
     {
         public bool Equals(IEnergyObservation x, IEnergyObservation y)
         {

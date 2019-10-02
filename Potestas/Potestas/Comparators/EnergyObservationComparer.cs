@@ -3,10 +3,13 @@ using Potestas.Interfaces;
 
 namespace Potestas.Comparators
 {
-    public class FlashComparer : IComparer<IEnergyObservation>
+    public class EnergyObservationComparer : IComparer<IEnergyObservation>
     {
         public int Compare(IEnergyObservation x, IEnergyObservation y)
         {
+            if (x == null || y == null)
+                return 0;
+
             if (x.ObservationPoint.X.CompareTo(y.ObservationPoint.X) != 0)
             {
                 return x.ObservationPoint.X.CompareTo(y.ObservationPoint.X);

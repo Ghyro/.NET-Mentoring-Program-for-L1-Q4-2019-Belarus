@@ -57,7 +57,16 @@ namespace Potestas.Observations
             set => _observationTime = value;
         }
 
-        public double EstimatedValue => _intensity * _durationMs;
+        public double EstimatedValue
+        {
+            get
+            {
+                checked
+                {
+                    return _intensity * _durationMs;
+                }
+            }
+        }
 
         public override string ToString()
         {
@@ -78,13 +87,16 @@ namespace Potestas.Observations
 
         public static bool operator ==(FlashObservation flashObservation1, FlashObservation flashObservation2)
         {
-            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) &&
-                   flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
+            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint)
+                   && flashObservation1.ObservationTime.Equals(flashObservation2.ObservationTime)
+                   && flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
         }
 
         public static bool operator !=(FlashObservation flashObservation1, FlashObservation flashObservation2)
         {
-            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint) || !flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
+            return !flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint)
+                   && !flashObservation1.ObservationTime.Equals(flashObservation2.ObservationTime)
+                   && !flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
         }
 
         public override bool Equals(object obj)
