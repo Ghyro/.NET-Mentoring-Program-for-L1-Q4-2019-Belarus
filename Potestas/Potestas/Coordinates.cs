@@ -17,10 +17,10 @@ namespace Potestas
         private double _x;
         private double _y;
 
-        public Coordinates(double x, double y)
+        public Coordinates(double x, double y) : this()
         {
-            _x = x;
-            _y = y;
+            X = x;
+            Y = y; 
         }
 
         public double X
@@ -69,7 +69,7 @@ namespace Potestas
         {
             if (obj is Coordinates coordinates)
                 return Math.Round(coordinates.X, 3) == Math.Round(this.X, 3) && Math.Round(coordinates.Y, 3) == Math.Round(this.Y, 3);
-            throw new ArgumentException(nameof(obj));
+            return false;
         }
 
         public override int GetHashCode()

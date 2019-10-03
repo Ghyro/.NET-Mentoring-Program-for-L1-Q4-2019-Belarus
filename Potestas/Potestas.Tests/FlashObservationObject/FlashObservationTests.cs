@@ -113,7 +113,7 @@ namespace Potestas.Tests.FlashObservationObject
             };
 
             var month = DateTime.Now.Month.ToString("d2");
-            var day = DateTime.Now.Day.ToString();
+            var day = DateTime.Now.Day.ToString("00");
             var year = DateTime.UtcNow.Year.ToString();
 
             var expectedResult = "ObservationPoint X - Y: 2.0 - 2.0, Intensity: 10, Duration ms: 10," +

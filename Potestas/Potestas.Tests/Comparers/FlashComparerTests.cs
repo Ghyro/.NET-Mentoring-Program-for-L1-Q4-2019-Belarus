@@ -36,7 +36,7 @@ namespace Potestas.Tests.Comparers
             var expectedResult =  new List<IEnergyObservation> { flashObservation2, flashObservation1, flashObservation3 };
 
             // Act
-            observations.Sort(new FlashComparer());
+            observations.Sort(new EnergyObservationComparer());
 
             // Assert
             Assert.AreEqual(expectedResult, observations, "Two collections is not equal");
