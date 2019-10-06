@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Potestas.Interfaces;
-using Potestas.Sources;
-using Potestas.Sources.Events;
 
 namespace Potestas.Apps.Terminal
 {
@@ -29,24 +27,79 @@ namespace Potestas.Apps.Terminal
     class ConsoleSource : IEnergyObservationSource
     {
         private readonly List<IObserver<IEnergyObservation>> _processors;
-        private readonly RandomEnergySource _randomEnergySource;
 
         public string Description => "Console input energy observation";
 
         public ConsoleSource()
         {
             _processors = new List<IObserver<IEnergyObservation>>();
-            _randomEnergySource = new RandomEnergySource();
         }
 
         public async Task Run(CancellationToken cancellationToken)
         {        
             cancellationToken.ThrowIfCancellationRequested();
             await Task.WhenAny(
-                _randomEnergySource.Run(cancellationToken),
-                _randomEnergySource.CheckCancellation(cancellationToken)
+                ReadInput(cancellationToken),
+                CheckCancellation(cancellationToken)
                 );
-        }        
+        }
+
+        private async Task CheckCancellation(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(500);
+            }
+            Done();
+        }
+
+        private async Task ReadInput(CancellationToken cancellationToken)
+        {
+            await Task.Run(() =>
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        var str = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(str))
+                        {
+                            GenerateRandomObservation();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        PublishException(ex);
+                        throw;
+                    }
+                }
+            });
+        }
+
+        private void Done()
+        {
+            foreach (var processor in _processors)
+            {
+                processor.OnCompleted();
+            }
+        }
+
+        private void GenerateRandomObservation()
+        {
+            FlashObservation obs = new FlashObservation();
+            foreach (var processor in _processors)
+            {
+                processor.OnNext(obs);
+            }
+        }
+
+        private void PublishException(Exception error)
+        {
+            foreach (var processor in _processors)
+            {
+                processor.OnError(error);
+            }
+        }
 
         public IDisposable Subscribe(IObserver<IEnergyObservation> observer)
         {

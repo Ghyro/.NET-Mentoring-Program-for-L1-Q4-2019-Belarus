@@ -1,5 +1,5 @@
 ﻿using Potestas.Interfaces;
-using Potestas.Sources.Events;
+using Potestas.Observations;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -12,133 +12,67 @@ namespace Potestas.Sources
      * 1. Implement both IEnergyObservationSource and IEnergyObservationSourceEventSource interfaces.
      * 2. Try to implement it with abstract class or delegate parameters to make it universal.
      */
-    public class RandomEnergySource : IEnergyObservationSource, IEnergyObservationEventSource
+    public class RandomEnergySource : IEnergyObservationSource
     {
-        private readonly List<IObserver<IEnergyObservation>> _processors;
+        private readonly List<IObserver<IEnergyObservation>> _observers;
+        private readonly List<IEnergyObservation> _energyObservations;
+
 
         public RandomEnergySource()
         {
-            _processors = new List<IObserver<IEnergyObservation>>();
+            _observers = new List<IObserver<IEnergyObservation>>();
+            _energyObservations = new List<IEnergyObservation>();
         }
 
         public string Description => "Console RandomEnergySource";
 
-        public async Task Run(CancellationToken cancellationToken)
+        public Task Run(CancellationToken cancellationToken)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 while (!cancellationToken.IsCancellationRequested)
-                {
-                    try
-                    {
-                        var str = Console.ReadLine();
-                        if (!string.IsNullOrEmpty(str))
-                        {
-                            GenerateNewFlashObservation();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        PublishException(ex);
-                        throw;
-                    }
+                {                    
+                    var randomPeriod = new Random((int)DateTime.Now.Ticks);
+                    var newObservation = RandomObservationServices.CreateRandomObservation();
+                    _energyObservations.Add(newObservation);
+                    GenerateRandomObservation(newObservation);
+                    Thread.Sleep(randomPeriod.Next(100, 1000));                    
                 }
             });
         }
 
-        public void GenerateNewFlashObservation()
+        private void GenerateRandomObservation(FlashObservation newObservation)
         {
-            var flashObservation = RandomObservationServices.CreateRandomObservation();
-
-            foreach (var processor in _processors)
-            {          
-                processor.OnNext(flashObservation);
-
-                var args = new NewValueObservedEventArgs(flashObservation);
-
-                OnNewValueObserved(args.FlashObservation);
+            foreach (var observer in _observers)
+            {
+                observer.OnNext(newObservation);
             }
         }
 
-        public IDisposable Subscribe(IObserver<IEnergyObservation> processor)
+        public IDisposable Subscribe(IObserver<IEnergyObservation> observer)
         {
-            if (!_processors.Contains(processor))
-                _processors.Add(processor);
-            return new Unsubscriber(_processors, processor);
+            if (!_observers.Contains(observer))            
+                _observers.Add(observer);            
+
+            return new Unsubscriber(_observers, observer);
         }
 
         private class Unsubscriber : IDisposable
         {
-            private List<IObserver<IEnergyObservation>> _processors;
-            private IObserver<IEnergyObservation> _processor;
+            private List<IObserver<IEnergyObservation>> _observers;
+            private IObserver<IEnergyObservation> _observer;
 
             public Unsubscriber(List<IObserver<IEnergyObservation>> observers, IObserver<IEnergyObservation> observer)
             {
-                _processors = observers;
-                _processor = observer;
+                _observers = observers;
+                _observer = observer;
             }
 
             public void Dispose()
             {
-                if (_processor != null && _processors.Contains(_processor))
-                    _processors.Remove(_processor);
-            }
-        }        
-
-        public async Task CheckCancellation(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(500);
-            }
-            Done();
-        }
-
-        private void Done()
-        {
-            foreach (var processor in _processors)
-            {
-                processor.OnCompleted();
-
-                var args = new ValueObservationDoneEventArgs("A new value observation done");
-
-                OnValueObservationDone(args);
+                if (_observers != null && _observers.Contains(_observer))
+                    _observers.Remove(_observer);
             }
         }
-
-        private void PublishException(Exception error)
-        {
-            foreach (var processor in _processors)
-            {
-                processor.OnError(error);
-
-                var args = new ValueObservationErrorEventArgs(error);
-
-                OnValueObservationError(args.Exception);
-            }
-        }
-
-        #region events
-
-        protected virtual void OnNewValueObserved(IEnergyObservation e)
-        {
-            NewValueObserved?.Invoke(this, e);
-        }
-
-        protected virtual void OnValueObservationDone(ValueObservationDoneEventArgs e)
-        {
-            ObservationEnd?.Invoke(this, e);
-        }
-
-        protected virtual void OnValueObservationError(Exception e)
-        {
-            ObservationError?.Invoke(this, e);
-        }
-
-        public event EventHandler<IEnergyObservation> NewValueObserved;
-        public event EventHandler<Exception> ObservationError;
-        public event EventHandler ObservationEnd;
-
-        #endregion
     }
 }
