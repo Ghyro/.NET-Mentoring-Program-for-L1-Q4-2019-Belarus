@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Potestas.Interfaces;
 
 namespace Potestas.Observations
@@ -20,6 +21,9 @@ namespace Potestas.Observations
     * Why immutable structure is used here?
     * TESTS: Cover this structure with unit tests
     */
+
+    [Serializable]
+    [DataContract]
     public struct FlashObservation : IEnergyObservation
     {
         private const int MAX_INTENSITY = 2000000000;
@@ -32,8 +36,10 @@ namespace Potestas.Observations
             ObservationTime = observationTime;
         }
 
+        [DataMember]
         public Coordinates ObservationPoint { get; set; }
 
+        [DataMember]
         public double Intensity
         {
             get => _intensity;
@@ -45,18 +51,21 @@ namespace Potestas.Observations
             }
         }
 
+        [DataMember]
         public int DurationMs
         {
             get => _durationMs;
             set => _durationMs = value;
         }
 
+        [DataMember]
         public DateTime ObservationTime
         {
             get => _observationTime;
             set => _observationTime = value;
         }
 
+        [DataMember]
         public double EstimatedValue
         {
             get

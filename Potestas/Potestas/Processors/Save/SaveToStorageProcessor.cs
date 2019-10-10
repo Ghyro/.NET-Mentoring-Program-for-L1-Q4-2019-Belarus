@@ -1,7 +1,7 @@
 ﻿using System;
 using Potestas.Interfaces;
 
-namespace Potestas.Processors
+namespace Potestas.Processors.Save
 {
     public class SaveToStorageProcessor : IEnergyObservationProcessor<IEnergyObservation>
     {

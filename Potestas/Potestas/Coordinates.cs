@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Potestas
 {
@@ -12,6 +13,9 @@ namespace Potestas
      * 7. Implement == and != operators for this structure.
      * 8. 
      */
+
+    [Serializable]
+    [DataContract]
     public struct Coordinates
     {
         private double _x;
@@ -23,6 +27,7 @@ namespace Potestas
             Y = y; 
         }
 
+        [DataMember]
         public double X
         {
             get => _x;
@@ -34,6 +39,7 @@ namespace Potestas
             }
         }
 
+        [DataMember]
         public double Y
         {
             get => _y;
