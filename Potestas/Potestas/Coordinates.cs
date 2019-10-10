@@ -39,7 +39,7 @@ namespace Potestas
             get => _y;
             set
             {
-                if (value < -0 || value > 180)
+                if (value < 0 || value > 180)
                     throw new ArgumentOutOfRangeException(nameof(value));
                 _y = value;
             }

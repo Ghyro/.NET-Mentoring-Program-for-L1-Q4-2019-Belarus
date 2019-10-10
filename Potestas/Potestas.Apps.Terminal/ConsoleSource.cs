@@ -36,7 +36,7 @@ namespace Potestas.Apps.Terminal
         }
 
         public async Task Run(CancellationToken cancellationToken)
-        {
+        {        
             cancellationToken.ThrowIfCancellationRequested();
             await Task.WhenAny(
                 ReadInput(cancellationToken),
@@ -46,7 +46,7 @@ namespace Potestas.Apps.Terminal
 
         private async Task CheckCancellation(CancellationToken cancellationToken)
         {
-            while(!cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(500);
             }
@@ -87,7 +87,7 @@ namespace Potestas.Apps.Terminal
         private void GenerateRandomObservation()
         {
             FlashObservation obs = new FlashObservation();
-            foreach(var processor in _processors)
+            foreach (var processor in _processors)
             {
                 processor.OnNext(obs);
             }
@@ -110,6 +110,6 @@ namespace Potestas.Apps.Terminal
         internal void Unsubscribe(IObserver<IEnergyObservation> observer)
         {
             _processors.Remove(observer);
-        }
+        }      
     }
 }

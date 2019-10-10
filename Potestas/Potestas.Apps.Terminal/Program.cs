@@ -2,6 +2,7 @@
 using Potestas.Storages;
 using System;
 using Potestas.Interfaces;
+using Potestas.Sources;
 
 namespace Potestas.Apps.Terminal
 {
@@ -9,10 +10,12 @@ namespace Potestas.Apps.Terminal
     {
         private static readonly IEnergyObservationApplicationModel _app;
         private static ISourceRegistration _testRegistration;
+        private static readonly RandomEnergySource _randomEnergySource;
 
         static Program()
         {
             _app = new ApplicationFrame();
+            _randomEnergySource = new RandomEnergySource();
         }
 
         private static void Main()
@@ -40,7 +43,7 @@ namespace Potestas.Apps.Terminal
 
         public IEnergyObservationSource CreateSource()
         {
-            return new ConsoleSource();
+            return new RandomEnergySource();
         }
     }
 
