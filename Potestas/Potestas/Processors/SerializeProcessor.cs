@@ -7,7 +7,7 @@ namespace Potestas.Processors
      * 1. Use serialization mechanism here. 
      * 2. Some IEnergyObservation could not be serializable.
      */
-    public class SerializeProcessor : IEnergyObservationProcessor
+    public class SerializeProcessor : IEnergyObservationProcessor<IEnergyObservation>
     {
         public string Description => throw new NotImplementedException();
 

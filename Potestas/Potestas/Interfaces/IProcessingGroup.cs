@@ -3,7 +3,7 @@
 {
     public interface IProcessingGroup
     {
-        IEnergyObservationProcessor Processor { get; }
+        IEnergyObservationProcessor<IEnergyObservation> Processor { get; }
 
         IEnergyObservationStorage Storage { get; }
 

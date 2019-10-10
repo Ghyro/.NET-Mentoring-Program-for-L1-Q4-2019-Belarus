@@ -11,14 +11,14 @@ namespace Potestas.Interfaces
      * 3. Compare IEnergyObservationSource and IEnergyObservationEventSource. 
      * Why IEnergyObservationSource is enough to implement Observable? Which option do you prefere? 
      */
-    public interface IEnergyObservationSource : IObservable<IEnergyObservation>
+    public interface IEnergyObservationSource<out T> : IObservable<T> where T : IEnergyObservation
     {
         string Description { get; }
 
         Task Run(CancellationToken cancellationToken);
     }
 
-    public interface IEnergyObservationEventSource : IEnergyObservationSource
+    public interface IEnergyObservationEventSource : IEnergyObservationSource<IEnergyObservation>
     {
         event EventHandler<IEnergyObservation> NewValueObserved;
 

@@ -9,14 +9,14 @@ namespace Potestas
      */
     public interface ISourceFactory
     {
-        IEnergyObservationSource CreateSource();
+        IEnergyObservationSource<IEnergyObservation> CreateSource();
 
         IEnergyObservationEventSource CreateEventSource();
     }
 
     public interface IProcessingFactory
     {
-        IEnergyObservationProcessor CreateProcessor();
+        IEnergyObservationProcessor<IEnergyObservation> CreateProcessor();
 
         IEnergyObservationStorage CreateStorage();
 

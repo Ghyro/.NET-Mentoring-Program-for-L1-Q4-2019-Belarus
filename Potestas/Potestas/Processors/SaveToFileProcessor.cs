@@ -9,7 +9,7 @@ namespace Potestas.Processors
      * Which bonuses does decoration have?
      * TEST: Which kind of tests should be written for this class?
      */
-    public class SaveToFileProcessor : IEnergyObservationProcessor
+    public class SaveToFileProcessor : IEnergyObservationProcessor<IEnergyObservation>
     {
         public string Description => throw new NotImplementedException();
 

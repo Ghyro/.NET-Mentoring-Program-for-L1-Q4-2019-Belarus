@@ -3,7 +3,7 @@ using Potestas.Interfaces;
 
 namespace Potestas.Processors
 {
-    public class SaveToStorageProcessor : IEnergyObservationProcessor
+    public class SaveToStorageProcessor : IEnergyObservationProcessor<IEnergyObservation>
     {
         private readonly IEnergyObservationStorage _storage;
 

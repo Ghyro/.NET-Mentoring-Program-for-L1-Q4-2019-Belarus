@@ -3,7 +3,7 @@ using Potestas.Interfaces;
 
 namespace Potestas.Apps.Terminal
 {
-    internal class ConsoleProcessor : IEnergyObservationProcessor
+    internal class ConsoleProcessor : IEnergyObservationProcessor<IEnergyObservation>
     {
         public string Description => "Logs all observations to console";
 

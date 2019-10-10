@@ -10,12 +10,10 @@ namespace Potestas.Apps.Terminal
     {
         private static readonly IEnergyObservationApplicationModel _app;
         private static ISourceRegistration _testRegistration;
-        private static readonly RandomEnergySource _randomEnergySource;
 
         static Program()
         {
             _app = new ApplicationFrame();
-            _randomEnergySource = new RandomEnergySource();
         }
 
         private static void Main()
@@ -41,7 +39,7 @@ namespace Potestas.Apps.Terminal
             throw new NotImplementedException();
         }
 
-        public IEnergyObservationSource CreateSource()
+        public IEnergyObservationSource<IEnergyObservation> CreateSource()
         {
             return new RandomEnergySource();
         }
@@ -54,7 +52,7 @@ namespace Potestas.Apps.Terminal
             return new LINQAnalizer();
         }
 
-        public IEnergyObservationProcessor CreateProcessor()
+        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
             return new ConsoleProcessor();
         }
