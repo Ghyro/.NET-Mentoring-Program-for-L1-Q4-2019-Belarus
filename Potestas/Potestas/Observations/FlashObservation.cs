@@ -22,7 +22,6 @@ namespace Potestas.Observations
     * TESTS: Cover this structure with unit tests
     */
 
-    [Serializable]
     [DataContract]
     public struct FlashObservation : IEnergyObservation
     {

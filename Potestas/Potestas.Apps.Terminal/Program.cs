@@ -57,7 +57,7 @@ namespace Potestas.Apps.Terminal
             return new ConsoleProcessor();
         }
 
-        public IEnergyObservationStorage CreateStorage()
+        public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
             return new ListStorage();
         }

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization.Json;
-using System.Text;
+using Newtonsoft.Json;
 using Potestas.Interfaces;
 
 namespace Potestas.Processors.Serializers
@@ -17,11 +16,23 @@ namespace Potestas.Processors.Serializers
 
         public override void OnNext(T value)
         {
-            using (Stream)
+            base.OnNext(value);
+
+            var content = string.Empty;
+
+            if (Stream.Length > 0)
             {
-                if (Stream.CanWrite)
-                    _jsonSerializer.WriteObject(Stream, value);
+                content = ReadAllStream().Result;
+                var items = JsonConvert.DeserializeObject<List<T>>(content);
+                items.Add(value);
+                content = JsonConvert.SerializeObject(items);
             }
+            else
+            {
+                content = JsonConvert.SerializeObject(value);
+            }
+
+            WriteToStream(content).Wait();
         }
 
         public override string Description => "Json serialize processor";

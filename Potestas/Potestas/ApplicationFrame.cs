@@ -18,7 +18,7 @@ namespace Potestas
 
         public IEnergyObservationProcessor<IEnergyObservation> Processor { get; }
 
-        public IEnergyObservationStorage Storage { get; }
+        public IEnergyObservationStorage<IEnergyObservation> Storage { get; }
 
         public IEnergyObservationAnalizer Analizer { get; }
 

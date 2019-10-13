@@ -5,7 +5,7 @@
     {
         IEnergyObservationProcessor<IEnergyObservation> Processor { get; }
 
-        IEnergyObservationStorage Storage { get; }
+        IEnergyObservationStorage<IEnergyObservation> Storage { get; }
 
         IEnergyObservationAnalizer Analizer { get; }
 
