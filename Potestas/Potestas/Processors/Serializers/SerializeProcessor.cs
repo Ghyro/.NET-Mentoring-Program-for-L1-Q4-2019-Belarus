@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Potestas.Interfaces;
 
 namespace Potestas.Processors.Serializers
@@ -37,5 +38,21 @@ namespace Potestas.Processors.Serializers
             if (!(Stream.CanRead && Stream.CanWrite))
                 throw new ArgumentException(nameof(Stream));
         }
+
+        protected async Task<string> ReadAllStream()
+        {
+            var reader = new StreamReader(Stream);
+            var content = await reader.ReadToEndAsync().ConfigureAwait(false);
+            reader.Dispose();
+            return content;
+        }
+
+        protected async Task WriteToStream(string data)
+        {
+            var writer = new StreamWriter(Stream);
+            await writer.WriteAsync(data).ConfigureAwait(false);
+            writer.Dispose();
+        }
+
     }
 }

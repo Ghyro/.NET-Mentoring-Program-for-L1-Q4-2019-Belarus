@@ -30,7 +30,7 @@ namespace Potestas.Processors.Save
 
         public async void OnNext(T value)
         {
-            using (_stream = new FileStream(FileName, FileMode.Append))
+            using (_stream = new FileStream(FileName, FileMode.OpenOrCreate))
             {
                 if (ReferenceEquals(EnergyObservation, null))
                 {
