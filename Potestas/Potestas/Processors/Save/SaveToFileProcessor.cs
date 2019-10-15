@@ -16,7 +16,15 @@ namespace Potestas.Processors.Save
     {
         protected IEnergyObservationProcessor<T> EnergyObservation;
         private Stream _stream;
-        public string FileName { get; set; }
+        private string _filePath;
+
+        public SaveToFileProcessor(string filePath)
+        {
+            if (!File.Exists(filePath))
+                using (File.Create(filePath)) { }
+
+            _filePath = filePath;
+        }
 
         public void OnCompleted()
         {
@@ -30,7 +38,7 @@ namespace Potestas.Processors.Save
 
         public async void OnNext(T value)
         {
-            using (_stream = new FileStream(FileName, FileMode.OpenOrCreate))
+            using (_stream = new FileStream(_filePath, FileMode.OpenOrCreate))
             {
                 if (ReferenceEquals(EnergyObservation, null))
                 {

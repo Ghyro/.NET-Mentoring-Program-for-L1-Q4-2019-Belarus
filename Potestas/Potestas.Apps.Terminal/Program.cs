@@ -3,6 +3,7 @@ using Potestas.Storages;
 using System;
 using Potestas.Interfaces;
 using Potestas.Sources;
+using Potestas.Processors.Save;
 
 namespace Potestas.Apps.Terminal
 {
@@ -47,14 +48,19 @@ namespace Potestas.Apps.Terminal
 
     internal class ConsoleProcessingFactory : IProcessingFactory
     {
-        public IEnergyObservationAnalizer CreateAnalizer()
+        public IEnergyObservationAnalizer CreateAnalizer(IEnergyObservationStorage<IEnergyObservation> observationStorage)
         {
-            return new LINQAnalizer();
+            return new LINQAnalizer(observationStorage);
         }
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
             return new ConsoleProcessor();
+        }
+
+        public IEnergyObservationProcessor<IEnergyObservation> CreateSaveToFileProcessor()
+        {
+            return new SaveToFileProcessor<IEnergyObservation>(@"C:\observaions.txt");           
         }
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()

@@ -35,6 +35,14 @@ namespace Potestas.Observations
             ObservationTime = observationTime;
         }
 
+        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime) : this()
+        {
+            DurationMs = durationMs;
+            Intensity = intensity;
+            ObservationPoint = observationPoint;
+            ObservationTime = observationTime;
+        }
+
         [DataMember]
         public Coordinates ObservationPoint { get; set; }
 
