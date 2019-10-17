@@ -18,9 +18,9 @@ namespace Potestas.Interfaces
         Task Run(CancellationToken cancellationToken);
     }
 
-    public interface IEnergyObservationEventSource : IEnergyObservationSource<IEnergyObservation>
+    public interface IEnergyObservationEventSource<T> : IEnergyObservationSource<T> where T: IEnergyObservation
     {
-        event EventHandler<IEnergyObservation> NewValueObserved;
+        event EventHandler<T> NewValueObserved;
 
         event EventHandler<Exception> ObservationError;
 

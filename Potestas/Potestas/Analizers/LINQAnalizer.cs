@@ -7,11 +7,11 @@ namespace Potestas.Analizers
 {
     /* TASK. Implement an Analizer for Observations using LINQ
      */
-    public class LINQAnalizer : IEnergyObservationAnalizer
+    public class LINQAnalizer<T> : IEnergyObservationAnalizer<T> where T: IEnergyObservation
     {
-        private readonly IEnergyObservationStorage<IEnergyObservation> _observations;
+        private IEnergyObservationStorage<T> _observations;
 
-        public LINQAnalizer(IEnergyObservationStorage<IEnergyObservation> observations)
+        public LINQAnalizer(IEnergyObservationStorage<T> observations)
         {
             _observations = observations;
         }

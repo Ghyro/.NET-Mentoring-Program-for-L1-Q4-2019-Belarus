@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Potestas.Interfaces
 {
-    public interface IEnergyObservationAnalizer
+    public interface IEnergyObservationAnalizer<T> where T: IEnergyObservation
     {
         IDictionary<double, int> GetDistributionByEnergyValue();
 

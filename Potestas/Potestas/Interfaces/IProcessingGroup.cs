@@ -1,13 +1,13 @@
 ﻿namespace Potestas.Interfaces
 
 {
-    public interface IProcessingGroup
+    public interface IProcessingGroup<T> where T: IEnergyObservation
     {
-        IEnergyObservationProcessor<IEnergyObservation> Processor { get; }
+        IEnergyObservationProcessor<T> Processor { get; }
 
-        IEnergyObservationStorage<IEnergyObservation> Storage { get; }
+        IEnergyObservationStorage<T> Storage { get; }
 
-        IEnergyObservationAnalizer Analizer { get; }
+        IEnergyObservationAnalizer<T> Analizer { get; }
 
         void Detach();
     }

@@ -14,16 +14,13 @@ namespace Potestas.Processors.Save
      */
     public class SaveToFileProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
     {
-        protected IEnergyObservationProcessor<T> EnergyObservation;
+        protected IEnergyObservationProcessor<T> _processor;
         private Stream _stream;
-        private string _filePath;
+        public string FileName { get; set; }
 
-        public SaveToFileProcessor(string filePath)
+        public SaveToFileProcessor(IEnergyObservationProcessor<T> processor)
         {
-            if (!File.Exists(filePath))
-                using (File.Create(filePath)) { }
-
-            _filePath = filePath;
+            _processor = processor;
         }
 
         public void OnCompleted()
@@ -38,9 +35,9 @@ namespace Potestas.Processors.Save
 
         public async void OnNext(T value)
         {
-            using (_stream = new FileStream(_filePath, FileMode.OpenOrCreate))
+            using (_stream = new FileStream(FileName, FileMode.OpenOrCreate))
             {
-                if (ReferenceEquals(EnergyObservation, null))
+                if (ReferenceEquals(_processor, null))
                 {
                     var data = value.ToString();
                     var bytes = Encoding.Default.GetBytes(data);
@@ -48,10 +45,10 @@ namespace Potestas.Processors.Save
                 }
                 else
                 {
-                    if (EnergyObservation is SerializeProcessor<T> processor)
+                    if (_processor is SerializeProcessor<T> processor)
                         processor.Stream = _stream;
 
-                    EnergyObservation.OnNext(value);
+                    _processor.OnNext(value);
                 }
 
                 _stream.Close();

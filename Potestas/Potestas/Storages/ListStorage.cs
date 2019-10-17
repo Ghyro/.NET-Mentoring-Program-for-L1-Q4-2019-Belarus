@@ -4,18 +4,18 @@ using Potestas.Interfaces;
 
 namespace Potestas.Storages
 {
-    public class ListStorage : List<IEnergyObservation>, IEnergyObservationStorage<IEnergyObservation>
+    public class ListStorage<T> : List<T>, IEnergyObservationStorage<T> where T: IEnergyObservation
     {
         public string Description => "Simple in-memory storage of energy observations";
 
-        public IEnumerable<IEnergyObservation> GetAll()
+        public IEnumerable<T> GetAll()
         {
             return this;
         }
 
-        public IEnergyObservation GetByHash(int hashCode)
+        public T GetByHash(int hashCode)
         {
-            return this.SingleOrDefault(item => item.GetHashCode() == hashCode);
+            return this.Single(item => item.GetHashCode() == hashCode);
         }
     }
 }

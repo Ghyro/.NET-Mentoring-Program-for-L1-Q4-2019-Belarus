@@ -3,11 +3,11 @@ using Potestas.Interfaces;
 
 namespace Potestas.Processors.Save
 {
-    public class SaveToStorageProcessor : IEnergyObservationProcessor<IEnergyObservation>
+    public class SaveToStorageProcessor<T> : IEnergyObservationProcessor<T> where T : IEnergyObservation
     {
-        private readonly IEnergyObservationStorage<IEnergyObservation> _storage;
+        private readonly IEnergyObservationStorage<T> _storage;
 
-        public SaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> storage)
+        public SaveToStorageProcessor(IEnergyObservationStorage<T> storage)
         {
             _storage = storage;
         }
@@ -24,7 +24,7 @@ namespace Potestas.Processors.Save
             Console.WriteLine($"Error appeared: {error}");
         }
 
-        public void OnNext(IEnergyObservation value)
+        public void OnNext(T value)
         {
             _storage.Add(value);
         }

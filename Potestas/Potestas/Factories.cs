@@ -7,19 +7,25 @@ namespace Potestas
      * Which pattern is used here?
      * Why factory interface is needed here?
      */
-    public interface ISourceFactory
+    public interface ISourceFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationSource<IEnergyObservation> CreateSource();
+        IEnergyObservationSource<T> CreateSource();
 
-        IEnergyObservationEventSource CreateEventSource();
+        IEnergyObservationEventSource<T> CreateEventSource();
     }
 
-    public interface IProcessingFactory
+    public interface IProcessingFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationProcessor<IEnergyObservation> CreateProcessor();
+        IEnergyObservationProcessor<T> CreateProcessor(IStorageFactory<T> storageFactory = null, IProcessingFactory<T> processorFactory = null);
+    }
 
-        IEnergyObservationStorage<IEnergyObservation> CreateStorage();
+    public interface IStorageFactory<T> where T : IEnergyObservation
+    {
+        IEnergyObservationStorage<T> CreateStorage();
+    }
 
-        IEnergyObservationAnalizer CreateAnalizer(IEnergyObservationStorage<IEnergyObservation> observationStorage);
+    public interface IAnalizerFactory<T> where T: IEnergyObservation
+    {
+        IEnergyObservationAnalizer<T> CreateAnalizer<T>(IStorageFactory<T> storageFactory = null) where T : IEnergyObservation;
     }
 }

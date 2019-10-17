@@ -15,10 +15,10 @@ namespace Potestas.Storages
         private string _filePath;
         private readonly List<T> _observation;
 
-        public FileStorage(string filePath, List<T> collection)
+        public FileStorage(string filePath)
         {
             _filePath = filePath;
-            _observation = collection;
+            _observation = new List<T>();
             ReadFromFile();
         }
         public T this[int index]

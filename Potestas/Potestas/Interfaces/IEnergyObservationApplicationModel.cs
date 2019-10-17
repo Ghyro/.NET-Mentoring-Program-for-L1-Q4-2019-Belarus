@@ -5,14 +5,14 @@ namespace Potestas.Interfaces
 {
     public interface IEnergyObservationApplicationModel
     {
-        IReadOnlyCollection<ISourceFactory> SourceFactories { get; }
+        IReadOnlyCollection<ISourceFactory<IEnergyObservation>> SourceFactories { get; }
 
-        IReadOnlyCollection<IProcessingFactory> ProcessingFactories { get; }
+        IReadOnlyCollection<IProcessingFactory<IEnergyObservation>> ProcessingFactories { get; }
 
         IReadOnlyCollection<ISourceRegistration> RegisteredSources { get; }
 
         void LoadPlugin(Assembly assembly);
 
-        ISourceRegistration CreateAndRegisterSource(ISourceFactory factory);
+        ISourceRegistration CreateAndRegisterSource(ISourceFactory<IEnergyObservation> factory);
     }
 }

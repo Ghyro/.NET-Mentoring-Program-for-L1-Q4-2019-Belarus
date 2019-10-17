@@ -1,9 +1,6 @@
-﻿using Potestas.Analizers;
-using Potestas.Storages;
-using System;
+﻿using System;
 using Potestas.Interfaces;
 using Potestas.Sources;
-using Potestas.Processors.Save;
 
 namespace Potestas.Apps.Terminal
 {
@@ -21,7 +18,7 @@ namespace Potestas.Apps.Terminal
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory());
+            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory(), null, null);
             _testRegistration.Start().Wait();
         }
 
@@ -33,39 +30,24 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    internal class ConsoleSourceFactory : ISourceFactory
+    internal class ConsoleSourceFactory : ISourceFactory<IEnergyObservation>
     {
-        public IEnergyObservationEventSource CreateEventSource()
+        public IEnergyObservationEventSource<IEnergyObservation> CreateEventSource()
         {
             throw new NotImplementedException();
         }
 
         public IEnergyObservationSource<IEnergyObservation> CreateSource()
         {
-            return new RandomEnergySource();
+            return new RandomEnergySource<IEnergyObservation>();
         }
     }
 
-    internal class ConsoleProcessingFactory : IProcessingFactory
+    internal class ConsoleProcessingFactory : IProcessingFactory<IEnergyObservation>
     {
-        public IEnergyObservationAnalizer CreateAnalizer(IEnergyObservationStorage<IEnergyObservation> observationStorage)
-        {
-            return new LINQAnalizer(observationStorage);
-        }
-
-        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
+        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor(IStorageFactory<IEnergyObservation> storageFactory = null, IProcessingFactory<IEnergyObservation> processorFactory = null)
         {
             return new ConsoleProcessor();
-        }
-
-        public IEnergyObservationProcessor<IEnergyObservation> CreateSaveToFileProcessor()
-        {
-            return new SaveToFileProcessor<IEnergyObservation>(@"C:\observaions.txt");           
-        }
-
-        public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
-        {
-            return new ListStorage();
         }
     }
 }
