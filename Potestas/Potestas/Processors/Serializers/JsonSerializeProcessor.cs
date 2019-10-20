@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using Potestas.Interfaces;
@@ -18,22 +19,43 @@ namespace Potestas.Processors.Serializers
         {
             base.OnNext(value);
 
-            var content = string.Empty;
-
-            if (Stream.Length > 0)
+            using (var reader = new StreamReader(Stream))
+            using (var writer = new StreamWriter(Stream))
             {
-                content = ReadAllStream().Result;
-                var items = JsonConvert.DeserializeObject<List<T>>(content);
-                items.Add(value);
-                content = JsonConvert.SerializeObject(items);
-            }
-            else
-            {
-                content = JsonConvert.SerializeObject(value);
-            }
+                string content;
+                if (Stream.Length > 0)
+                {
+                    content = this.ReadAllStream(reader).Result;
 
-            WriteToStream(content).Wait();
+                    List<T> items;
+                    T item;
+
+                    if (content[0] == '[')
+                    {
+                        items = JsonConvert.DeserializeObject<List<T>>(content);
+                        items.Add(value);
+                    }
+                    else
+                    {
+                        item = JsonConvert.DeserializeObject<T>(content);
+                        items = new List<T>
+                        {
+                            item,
+                            value
+                        };
+                    }
+
+                    content = JsonConvert.SerializeObject(items, Formatting.Indented);
+                }
+                else
+                {
+                    content = JsonConvert.SerializeObject(value, Formatting.Indented);
+                }
+
+                WriteToStream(writer, content).Wait();
+            }
         }
+
 
         public override string Description => "Json serialize processor";
     }

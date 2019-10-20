@@ -16,7 +16,12 @@ namespace Potestas.Processors.Serializers
         public Stream Stream
         {
             get => _stream;
-            set => _stream = value ?? throw new ArgumentNullException(nameof(value));
+            set
+            {
+                if (ReferenceEquals(value, null))                
+                    throw new NullReferenceException(nameof(value));              
+                _stream = value;
+            }
         }
 
         public abstract string Description { get; }
@@ -39,20 +44,17 @@ namespace Potestas.Processors.Serializers
                 throw new ArgumentException(nameof(Stream));
         }
 
-        protected async Task<string> ReadAllStream()
+        protected async Task<string> ReadAllStream(StreamReader reader)
         {
-            var reader = new StreamReader(Stream);
             var content = await reader.ReadToEndAsync().ConfigureAwait(false);
-            reader.Dispose();
             return content;
         }
 
-        protected async Task WriteToStream(string data)
+        protected async Task WriteToStream(StreamWriter writer, string data)
         {
-            var writer = new StreamWriter(Stream);
+            Stream.Position = 0;
             await writer.WriteAsync(data).ConfigureAwait(false);
-            writer.Dispose();
+            await Stream.FlushAsync().ConfigureAwait(false);
         }
-
     }
 }
