@@ -1,4 +1,6 @@
 ﻿using Potestas.Interfaces;
+using Potestas.Processors.Serializers;
+using System.IO;
 
 namespace Potestas
 {
@@ -9,23 +11,28 @@ namespace Potestas
      */
     public interface ISourceFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationSource<T> CreateSource();
+        IEnergyObservationSource CreateSource();
 
         IEnergyObservationEventSource<T> CreateEventSource();
     }
 
     public interface IProcessingFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationProcessor<T> CreateProcessor(IStorageFactory<T> storageFactory = null, IProcessingFactory<T> processorFactory = null);
+        IEnergyObservationProcessor<T> CreateSaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> observationStorage);
+
+        IEnergyObservationProcessor<IEnergyObservation> CreateSerializeProcessor(Stream stream);
     }
 
     public interface IStorageFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationStorage<T> CreateStorage();
+        IEnergyObservationStorage<IEnergyObservation> CreateFileStorage(string filePath, SerializeProcessor<IEnergyObservation> serializer);
+
+
+        IEnergyObservationStorage<IEnergyObservation> CreateListStorage();
     }
 
     public interface IAnalizerFactory<T> where T: IEnergyObservation
     {
-        IEnergyObservationAnalizer<T> CreateAnalizer<T>(IStorageFactory<T> storageFactory = null) where T : IEnergyObservation;
+        IEnergyObservationAnalizer<T> CreateAnalizer(IEnergyObservationStorage<IEnergyObservation> observationStorage);
     }
 }

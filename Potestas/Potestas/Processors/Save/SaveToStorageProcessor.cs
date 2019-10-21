@@ -5,9 +5,9 @@ namespace Potestas.Processors.Save
 {
     public class SaveToStorageProcessor<T> : IEnergyObservationProcessor<T> where T : IEnergyObservation
     {
-        private readonly IEnergyObservationStorage<T> _storage;
+        private readonly IEnergyObservationStorage<IEnergyObservation> _storage;
 
-        public SaveToStorageProcessor(IEnergyObservationStorage<T> storage)
+        public SaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> storage)
         {
             _storage = storage;
         }

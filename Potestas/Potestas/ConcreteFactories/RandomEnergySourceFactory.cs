@@ -11,9 +11,9 @@ namespace Potestas.ConcreteFactories
             throw new NotImplementedException();
         }
 
-        public IEnergyObservationSource<T> CreateSource()
+        public IEnergyObservationSource CreateSource()
         {
-            return new RandomEnergySource<T>();
+            return new RandomEnergySource();
         }
     }
 }

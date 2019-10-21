@@ -9,9 +9,14 @@ namespace Potestas.Processors.Serializers
      * 1. Use serialization mechanism here. 
      * 2. Some IEnergyObservation could not be serializable.
      */
-    public abstract class SerializeProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
+    public class SerializeProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
     {
         private Stream _stream;
+
+        public SerializeProcessor(Stream stream)
+        {
+            Stream = stream;
+        }
 
         public Stream Stream
         {
@@ -24,7 +29,7 @@ namespace Potestas.Processors.Serializers
             }
         }
 
-        public abstract string Description { get; }
+        public virtual string Description { get; }
 
         public void OnCompleted()
         {

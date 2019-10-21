@@ -10,7 +10,7 @@ namespace Potestas.Processors.Serializers
     {
         private readonly DataContractJsonSerializer _jsonSerializer;
 
-        public JsonSerializeProcessor()
+        public JsonSerializeProcessor(Stream stream) : base(stream)
         {
             _jsonSerializer = new DataContractJsonSerializer(typeof(T));
         }
@@ -55,7 +55,6 @@ namespace Potestas.Processors.Serializers
                 WriteToStream(writer, content).Wait();
             }
         }
-
 
         public override string Description => "Json serialize processor";
     }

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using Potestas.Interfaces;
+using Potestas.Processors.Save;
+using Potestas.Processors.Serializers;
 using Potestas.Sources;
 
 namespace Potestas.Apps.Terminal
@@ -37,17 +40,22 @@ namespace Potestas.Apps.Terminal
             throw new NotImplementedException();
         }
 
-        public IEnergyObservationSource<IEnergyObservation> CreateSource()
+        public IEnergyObservationSource CreateSource()
         {
-            return new RandomEnergySource<IEnergyObservation>();
+            return new RandomEnergySource();
         }
     }
 
     internal class ConsoleProcessingFactory : IProcessingFactory<IEnergyObservation>
     {
-        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor(IStorageFactory<IEnergyObservation> storageFactory = null, IProcessingFactory<IEnergyObservation> processorFactory = null)
+        public IEnergyObservationProcessor<IEnergyObservation> CreateSaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> observationStorage)
         {
-            return new ConsoleProcessor();
+            return new SaveToStorageProcessor<IEnergyObservation>(observationStorage);
+        }
+
+        public IEnergyObservationProcessor<IEnergyObservation> CreateSerializeProcessor(Stream stream)
+        {
+            return new SerializeProcessor<IEnergyObservation>(stream);
         }
     }
 }

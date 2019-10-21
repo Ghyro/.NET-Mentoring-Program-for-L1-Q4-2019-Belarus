@@ -24,7 +24,7 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    class ConsoleSource : IEnergyObservationSource<IEnergyObservation>
+    class ConsoleSource : IEnergyObservationSource
     {
         private readonly List<IObserver<IEnergyObservation>> _processors;
 

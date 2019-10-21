@@ -9,9 +9,9 @@ namespace Potestas.Analizers
      */
     public class LINQAnalizer<T> : IEnergyObservationAnalizer<T> where T: IEnergyObservation
     {
-        private IEnergyObservationStorage<T> _observations;
+        private IEnergyObservationStorage<IEnergyObservation> _observations;
 
-        public LINQAnalizer(IEnergyObservationStorage<T> observations)
+        public LINQAnalizer(IEnergyObservationStorage<IEnergyObservation> observations)
         {
             _observations = observations;
         }

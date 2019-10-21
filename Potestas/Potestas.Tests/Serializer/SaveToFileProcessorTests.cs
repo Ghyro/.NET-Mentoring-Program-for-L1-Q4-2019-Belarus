@@ -16,7 +16,7 @@ namespace Potestas.Tests.Serializer
         [Test]
         [TestCase(11.2, 14.0, 14.77, 1993)]
         [TestCase(15.99, 2, 0.06, 109)]
-        public void SaveWithOwnLogicTest(double x, double y, double intensity, int duration)
+        public void SaveToFileProcessor_SaveToTxtFile_WithoutDecorate(double x, double y, double intensity, int duration)
         {
             // Arrange
             var processor = new SaveToFileProcessor<FlashObservation>(null);
@@ -33,10 +33,11 @@ namespace Potestas.Tests.Serializer
         [Test]
         [TestCase(11.2, 14.0, 14.77, 1993)]
         [TestCase(15.99, 2, 0.06, 109)]
-        public void SaveWithDecoratedComponentLogicTest(double x, double y, double intensity, int duration)
+        public void SaveToFileProcessor_SaveToJsonFile_WithDecorate(double x, double y, double intensity, int duration)
         {
             // Arrange
-            var serializer = new JsonSerializeProcessor<FlashObservation>();
+            var fileStream = new FileStream(FileName, FileMode.OpenOrCreate);
+            var serializer = new JsonSerializeProcessor<FlashObservation>(fileStream);
             var processor = new SaveToFileProcessor<FlashObservation>(serializer);
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
@@ -46,6 +47,7 @@ namespace Potestas.Tests.Serializer
 
             // Assert
             Assert.True(File.Exists(JsonFileName));
+            fileStream.Close();
         }
     }
 }

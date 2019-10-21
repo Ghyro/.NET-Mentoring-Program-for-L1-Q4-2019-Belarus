@@ -1,13 +1,13 @@
-﻿using Potestas.Interfaces;
-using Potestas.Analizers;
+﻿using Potestas.Analizers;
+using Potestas.Interfaces;
 
 namespace Potestas.ConcreteFactories
 {
-    public class LINQAnalizerFactory<T> : IAnalizerFactory<T> where T: IEnergyObservation
+    public class LINQAnalizerFactory<T> : IAnalizerFactory<T> where T : IEnergyObservation
     {
-        public IEnergyObservationAnalizer<T> CreateAnalizer<T>(IStorageFactory<T> storageFactory = null) where T : IEnergyObservation
+        public IEnergyObservationAnalizer<T> CreateAnalizer(IEnergyObservationStorage<IEnergyObservation> observationStorage)
         {
-            return new LINQAnalizer<T>(storageFactory.CreateStorage());
+            return new LINQAnalizer<T>(observationStorage);
         }
     }
 }

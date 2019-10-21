@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Potestas.Interfaces;
+using Potestas.Processors.Serializers;
 
 namespace Potestas
 {
@@ -27,10 +28,10 @@ namespace Potestas
             IStorageFactory<IEnergyObservation> storageFactory,
             IAnalizerFactory<IEnergyObservation> analizerFactory)
         {
-            _sourceRegistration = sourceRegistration;
-            Processor = factory.CreateProcessor();
-            Storage = storageFactory.CreateStorage();
-            Analizer = analizerFactory.CreateAnalizer<IEnergyObservation>();
+            _sourceRegistration = sourceRegistration;            
+            Storage = storageFactory.CreateListStorage();
+            Processor = factory.CreateSaveToStorageProcessor(Storage);
+            Analizer = analizerFactory.CreateAnalizer(Storage);
         }
 
         public void Detach()
@@ -43,12 +44,12 @@ namespace Potestas
     internal class RegisteredEnergyObservationSourceWrapper : ISourceRegistration, IEnergyObservationProcessor<IEnergyObservation>
     {
         private readonly ApplicationFrame _app;
-        private readonly IEnergyObservationSource<IEnergyObservation> _inner;
+        private readonly IEnergyObservationSource _inner;
         private readonly IDisposable _internalSubscription;
         private readonly List<IProcessingGroup<IEnergyObservation>> _processingGroups;
         private CancellationTokenSource _cts;
 
-        public RegisteredEnergyObservationSourceWrapper(ApplicationFrame app, IEnergyObservationSource<IEnergyObservation> inner)
+        public RegisteredEnergyObservationSourceWrapper(ApplicationFrame app, IEnergyObservationSource inner)
         {
             _app = app;
             _inner = inner;
