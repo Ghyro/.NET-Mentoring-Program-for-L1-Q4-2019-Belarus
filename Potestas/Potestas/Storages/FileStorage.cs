@@ -12,7 +12,7 @@ namespace Potestas.Storages
      */
     public class FileStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
-        private string _filePath;
+        private readonly string _filePath;
         private readonly List<T> _observation;
 
         public FileStorage(string filePath)

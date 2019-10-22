@@ -16,10 +16,10 @@ namespace Potestas.Tests.Serializer
         {
             // Arrange
             var fileStream = new FileStream(FileName, FileMode.OpenOrCreate);
-            var _jsonSerialize = new JsonSerializeProcessor<FlashObservation>(fileStream);
+            var jsonSerialize = new JsonSerializeProcessor<FlashObservation> {Stream = fileStream};
 
             // Act & Assert
-            Assert.Throws<NullReferenceException>(() => _jsonSerialize.Stream = null);
+            Assert.Throws<ArgumentNullException>(() => jsonSerialize.Stream = null);
         }
 
         [Test]
@@ -29,11 +29,11 @@ namespace Potestas.Tests.Serializer
         {
             // Arrange
             var fileStream = new FileStream(FileName, FileMode.OpenOrCreate);
-            var _jsonSerialize = new JsonSerializeProcessor<FlashObservation>(fileStream);
+            var jsonSerialize = new JsonSerializeProcessor<FlashObservation> { Stream = fileStream };
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
             // Act
-            _jsonSerialize.OnNext(observation);
+            jsonSerialize.OnNext(observation);
             fileStream = new FileStream(FileName, FileMode.Open);
 
             // Assert

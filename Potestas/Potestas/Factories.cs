@@ -18,17 +18,12 @@ namespace Potestas
 
     public interface IProcessingFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationProcessor<T> CreateSaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> observationStorage);
-
-        IEnergyObservationProcessor<IEnergyObservation> CreateSerializeProcessor(Stream stream);
+        IEnergyObservationProcessor<T> CreateProcessor(IStorageFactory<T> storageFactory = null, IProcessingFactory<T> processorFactory = null);
     }
 
     public interface IStorageFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationStorage<IEnergyObservation> CreateFileStorage(string filePath, SerializeProcessor<IEnergyObservation> serializer);
-
-
-        IEnergyObservationStorage<IEnergyObservation> CreateListStorage();
+        IEnergyObservationStorage<T> CreateStorage();
     }
 
     public interface IAnalizerFactory<T> where T: IEnergyObservation

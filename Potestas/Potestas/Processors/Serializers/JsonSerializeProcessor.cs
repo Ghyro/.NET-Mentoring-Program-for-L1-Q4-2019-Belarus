@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using Potestas.Interfaces;
 
@@ -8,12 +7,7 @@ namespace Potestas.Processors.Serializers
 {
     public class JsonSerializeProcessor<T> : SerializeProcessor<T> where T: IEnergyObservation
     {
-        private readonly DataContractJsonSerializer _jsonSerializer;
-
-        public JsonSerializeProcessor(Stream stream) : base(stream)
-        {
-            _jsonSerializer = new DataContractJsonSerializer(typeof(T));
-        }
+        public override string Description => "JsonSerializeProcessor";
 
         public override void OnNext(T value)
         {
@@ -28,21 +22,17 @@ namespace Potestas.Processors.Serializers
                     content = this.ReadAllStream(reader).Result;
 
                     List<T> items;
-                    T item;
 
                     if (content[0] == '[')
                     {
+                        items = JsonConvert.DeserializeObject<List<T>>(content);
                         items = JsonConvert.DeserializeObject<List<T>>(content);
                         items.Add(value);
                     }
                     else
                     {
-                        item = JsonConvert.DeserializeObject<T>(content);
-                        items = new List<T>
-                        {
-                            item,
-                            value
-                        };
+                        var item = JsonConvert.DeserializeObject<T>(content);
+                        items = new List<T> {item, value};
                     }
 
                     content = JsonConvert.SerializeObject(items, Formatting.Indented);
@@ -55,7 +45,5 @@ namespace Potestas.Processors.Serializers
                 WriteToStream(writer, content).Wait();
             }
         }
-
-        public override string Description => "Json serialize processor";
     }
 }

@@ -29,8 +29,8 @@ namespace Potestas
             IAnalizerFactory<IEnergyObservation> analizerFactory)
         {
             _sourceRegistration = sourceRegistration;            
-            Storage = storageFactory.CreateListStorage();
-            Processor = factory.CreateSaveToStorageProcessor(Storage);
+            Storage = storageFactory.CreateStorage();
+            Processor = factory.CreateProcessor();
             Analizer = analizerFactory.CreateAnalizer(Storage);
         }
 

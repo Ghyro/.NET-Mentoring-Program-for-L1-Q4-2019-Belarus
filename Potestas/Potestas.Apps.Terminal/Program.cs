@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
+using Potestas.ConcreteFactories;
 using Potestas.Interfaces;
-using Potestas.Processors.Save;
-using Potestas.Processors.Serializers;
 using Potestas.Sources;
 
 namespace Potestas.Apps.Terminal
@@ -21,7 +19,7 @@ namespace Potestas.Apps.Terminal
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory(), null, null);
+            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory(), new ListStorageFactory<IEnergyObservation>(), new LINQAnalizerFactory<IEnergyObservation>());
             _testRegistration.Start().Wait();
         }
 
@@ -48,14 +46,9 @@ namespace Potestas.Apps.Terminal
 
     internal class ConsoleProcessingFactory : IProcessingFactory<IEnergyObservation>
     {
-        public IEnergyObservationProcessor<IEnergyObservation> CreateSaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> observationStorage)
+        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor(IStorageFactory<IEnergyObservation> storageFactory = null, IProcessingFactory<IEnergyObservation> processorFactory = null)
         {
-            return new SaveToStorageProcessor<IEnergyObservation>(observationStorage);
-        }
-
-        public IEnergyObservationProcessor<IEnergyObservation> CreateSerializeProcessor(Stream stream)
-        {
-            return new SerializeProcessor<IEnergyObservation>(stream);
+            return new ConsoleProcessor();
         }
     }
 }

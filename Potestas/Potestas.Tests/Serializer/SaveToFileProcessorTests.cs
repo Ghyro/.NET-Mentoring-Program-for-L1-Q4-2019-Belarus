@@ -37,7 +37,7 @@ namespace Potestas.Tests.Serializer
         {
             // Arrange
             var fileStream = new FileStream(FileName, FileMode.OpenOrCreate);
-            var serializer = new JsonSerializeProcessor<FlashObservation>(fileStream);
+            var serializer = new JsonSerializeProcessor<FlashObservation> { Stream = fileStream };
             var processor = new SaveToFileProcessor<FlashObservation>(serializer);
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
