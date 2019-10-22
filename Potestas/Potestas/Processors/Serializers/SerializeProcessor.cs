@@ -9,7 +9,7 @@ namespace Potestas.Processors.Serializers
      * 1. Use serialization mechanism here. 
      * 2. Some IEnergyObservation could not be serializable.
      */
-    public abstract class SerializeProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
+    public class SerializeProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
     {
         private Stream _stream;
 
@@ -18,11 +18,8 @@ namespace Potestas.Processors.Serializers
             get => _stream;
             set
             {
-                if (ReferenceEquals(value, null))
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
+                if (ReferenceEquals(value, null))                
+                    throw new ArgumentNullException(nameof(value));               
                 _stream = value;
             }
         }
@@ -43,7 +40,7 @@ namespace Potestas.Processors.Serializers
                 throw new Exception();
         }
 
-        public abstract string Description { get; }
+        public virtual string Description { get; }
 
         protected async Task<string> ReadAllStream(StreamReader reader)
         {

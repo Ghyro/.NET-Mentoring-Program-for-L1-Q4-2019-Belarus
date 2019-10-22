@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.IO;
 using Potestas.Analizers;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;
@@ -18,16 +19,16 @@ namespace Potestas.ConcreteFactories
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
-            return new SaveToFileProcessor<IEnergyObservation>(new JsonSerializeProcessor<IEnergyObservation>())
+            return new SaveToFileProcessor<IEnergyObservation>(new JsonSerializeProcessor<IEnergyObservation>()
             {
-                FileName = ConfigurationManager.AppSettings.Get("processorPath")
-            };
+                Stream = new FileStream(ConfigurationManager.AppSettings["storagePath"], FileMode.OpenOrCreate)
+            }, ConfigurationManager.AppSettings["processorPath"]);
         }
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
             if (_storage == null)
-                _storage = new FileStorage<IEnergyObservation>(ConfigurationManager.AppSettings.Get("storagePath"));
+                _storage = new FileStorage<IEnergyObservation>(ConfigurationManager.AppSettings["storagePath"]);
             return _storage;
         }
     }
