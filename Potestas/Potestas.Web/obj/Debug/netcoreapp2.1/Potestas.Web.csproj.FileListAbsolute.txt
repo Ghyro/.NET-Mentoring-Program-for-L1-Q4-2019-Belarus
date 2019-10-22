@@ -34,14 +34,6 @@ D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potesta
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csproj.CopyComplete
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.dll
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.pdb
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csprojAssemblyReference.cache
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csproj.CoreCompileInputs.cache
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorAssemblyInfo.cache
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorAssemblyInfo.cs
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.AssemblyInfoInputs.cache
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.AssemblyInfo.cs
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.dll
-C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.pdb
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.Web.deps.json
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.Web.runtimeconfig.json
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.Web.runtimeconfig.dev.json
@@ -52,6 +44,12 @@ C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.dll
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.pdb
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.dll.config
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csprojAssemblyReference.cache
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csproj.CoreCompileInputs.cache
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorAssemblyInfo.cache
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorAssemblyInfo.cs
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.AssemblyInfoInputs.cache
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.AssemblyInfo.cs
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.TagHelpers.input.cache
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.TagHelpers.output.cache
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorCoreGenerate.cache
@@ -70,3 +68,5 @@ C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorTargetAssemblyInfo.cs
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.Views.pdb
 C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csproj.CopyComplete
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.dll
+C:\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.pdb

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Text;
 using Potestas.Interfaces;
@@ -16,7 +17,13 @@ namespace Potestas.Processors.Save
     {
         protected IEnergyObservationProcessor<T> _processor;
         private Stream _stream;
-        public string FileName { get; set; }
+        public string _fileName { get; set; }
+
+        public string FileName
+        {
+            get => _fileName ?? ConfigurationManager.AppSettings.Get("processorPath");
+            set => _fileName = value;
+        }
 
         public SaveToFileProcessor(IEnergyObservationProcessor<T> processor)
         {

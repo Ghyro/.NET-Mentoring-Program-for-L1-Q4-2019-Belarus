@@ -19,13 +19,12 @@ namespace Potestas.Processors.Serializers
                 string content;
                 if (Stream.Length > 0)
                 {
-                    content = this.ReadAllStream(reader).Result;
+                    content = ReadAllStream(reader).Result;
 
                     List<T> items;
 
                     if (content[0] == '[')
                     {
-                        items = JsonConvert.DeserializeObject<List<T>>(content);
                         items = JsonConvert.DeserializeObject<List<T>>(content);
                         items.Add(value);
                     }

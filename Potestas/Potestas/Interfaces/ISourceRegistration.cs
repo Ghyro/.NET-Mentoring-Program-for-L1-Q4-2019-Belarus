@@ -15,7 +15,6 @@ namespace Potestas.Interfaces
 
         void Unregister();
 
-        IProcessingGroup<IEnergyObservation> AttachProcessingGroup(IProcessingFactory<IEnergyObservation> factory, IStorageFactory<IEnergyObservation> storageFactory,
-            IAnalizerFactory<IEnergyObservation> analizerFactory);
+        IProcessingGroup<IEnergyObservation> AttachProcessingGroup(IProcessingFactory factory);
     }
 }
