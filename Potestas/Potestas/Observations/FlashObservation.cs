@@ -22,7 +22,6 @@ namespace Potestas.Observations
     * TESTS: Cover this structure with unit tests
     */
 
-    [Serializable]
     [DataContract]
     public struct FlashObservation : IEnergyObservation
     {
@@ -33,6 +32,14 @@ namespace Potestas.Observations
 
         public FlashObservation(DateTime observationTime) : this()
         {
+            ObservationTime = observationTime;
+        }
+
+        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime) : this()
+        {
+            DurationMs = durationMs;
+            Intensity = intensity;
+            ObservationPoint = observationPoint;
             ObservationTime = observationTime;
         }
 

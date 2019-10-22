@@ -14,7 +14,6 @@ namespace Potestas
      * 8. 
      */
 
-    [Serializable]
     [DataContract]
     public struct Coordinates
     {

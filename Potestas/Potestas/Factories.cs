@@ -1,4 +1,6 @@
 ﻿using Potestas.Interfaces;
+using Potestas.Processors.Serializers;
+using System.IO;
 
 namespace Potestas
 {
@@ -7,19 +9,30 @@ namespace Potestas
      * Which pattern is used here?
      * Why factory interface is needed here?
      */
-    public interface ISourceFactory
+    public interface ISourceFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationSource<IEnergyObservation> CreateSource();
+        IEnergyObservationSource CreateSource();
 
-        IEnergyObservationEventSource CreateEventSource();
+        IEnergyObservationEventSource<T> CreateEventSource();
     }
 
-    public interface IProcessingFactory
+    public interface IProcessingFactory<T> where T : IEnergyObservation
     {
-        IEnergyObservationProcessor<IEnergyObservation> CreateProcessor();
+        IEnergyObservationProcessor<T> CreateSaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> observationStorage);
 
-        IEnergyObservationStorage CreateStorage();
+        IEnergyObservationProcessor<IEnergyObservation> CreateSerializeProcessor(Stream stream);
+    }
 
-        IEnergyObservationAnalizer CreateAnalizer();
+    public interface IStorageFactory<T> where T : IEnergyObservation
+    {
+        IEnergyObservationStorage<IEnergyObservation> CreateFileStorage(string filePath, SerializeProcessor<IEnergyObservation> serializer);
+
+
+        IEnergyObservationStorage<IEnergyObservation> CreateListStorage();
+    }
+
+    public interface IAnalizerFactory<T> where T: IEnergyObservation
+    {
+        IEnergyObservationAnalizer<T> CreateAnalizer(IEnergyObservationStorage<IEnergyObservation> observationStorage);
     }
 }

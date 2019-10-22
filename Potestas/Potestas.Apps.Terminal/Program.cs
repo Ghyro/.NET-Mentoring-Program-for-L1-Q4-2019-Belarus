@@ -1,7 +1,8 @@
-﻿using Potestas.Analizers;
-using Potestas.Storages;
-using System;
+﻿using System;
+using System.IO;
 using Potestas.Interfaces;
+using Potestas.Processors.Save;
+using Potestas.Processors.Serializers;
 using Potestas.Sources;
 
 namespace Potestas.Apps.Terminal
@@ -20,7 +21,7 @@ namespace Potestas.Apps.Terminal
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory());
+            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory(), null, null);
             _testRegistration.Start().Wait();
         }
 
@@ -32,34 +33,29 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    internal class ConsoleSourceFactory : ISourceFactory
+    internal class ConsoleSourceFactory : ISourceFactory<IEnergyObservation>
     {
-        public IEnergyObservationEventSource CreateEventSource()
+        public IEnergyObservationEventSource<IEnergyObservation> CreateEventSource()
         {
             throw new NotImplementedException();
         }
 
-        public IEnergyObservationSource<IEnergyObservation> CreateSource()
+        public IEnergyObservationSource CreateSource()
         {
             return new RandomEnergySource();
         }
     }
 
-    internal class ConsoleProcessingFactory : IProcessingFactory
+    internal class ConsoleProcessingFactory : IProcessingFactory<IEnergyObservation>
     {
-        public IEnergyObservationAnalizer CreateAnalizer()
+        public IEnergyObservationProcessor<IEnergyObservation> CreateSaveToStorageProcessor(IEnergyObservationStorage<IEnergyObservation> observationStorage)
         {
-            return new LINQAnalizer();
+            return new SaveToStorageProcessor<IEnergyObservation>(observationStorage);
         }
 
-        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
+        public IEnergyObservationProcessor<IEnergyObservation> CreateSerializeProcessor(Stream stream)
         {
-            return new ConsoleProcessor();
-        }
-
-        public IEnergyObservationStorage CreateStorage()
-        {
-            return new ListStorage();
+            return new SerializeProcessor<IEnergyObservation>(stream);
         }
     }
 }

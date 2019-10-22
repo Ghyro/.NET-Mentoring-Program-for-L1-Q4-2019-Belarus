@@ -12,27 +12,32 @@ namespace Potestas.Processors.Save
      * Which bonuses does decoration have?
      * TEST: Which kind of tests should be written for this class?
      */
-    public class SaveToFileProcessor<T> : BaseProcessor<T> where T: IEnergyObservation
+    public class SaveToFileProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
     {
-        protected BaseProcessor<T> BaseProcessor;
+        protected IEnergyObservationProcessor<T> _processor;
         private Stream _stream;
         public string FileName { get; set; }
 
-        public override void OnCompleted()
+        public SaveToFileProcessor(IEnergyObservationProcessor<T> processor)
+        {
+            _processor = processor;
+        }
+
+        public void OnCompleted()
         {
             Console.WriteLine("SaveToFileProcessor is completed");
         }
 
-        public override void OnError(Exception error)
+        public void OnError(Exception error)
         {
             Console.WriteLine($"Error appeared: {error}");
         }
 
-        public override async void OnNext(T value)
+        public async void OnNext(T value)
         {
-            using (_stream = new FileStream(FileName, FileMode.Append))
+            using (_stream = new FileStream(FileName, FileMode.OpenOrCreate))
             {
-                if (ReferenceEquals(BaseProcessor, null))
+                if (ReferenceEquals(_processor, null))
                 {
                     var data = value.ToString();
                     var bytes = Encoding.Default.GetBytes(data);
@@ -40,16 +45,16 @@ namespace Potestas.Processors.Save
                 }
                 else
                 {
-                    if (BaseProcessor is SerializeProcessor<T> processor)
+                    if (_processor is SerializeProcessor<T> processor)
                         processor.Stream = _stream;
 
-                    BaseProcessor.OnNext(value);
+                    _processor.OnNext(value);
                 }
 
                 _stream.Close();
             }
         }
 
-        public override string Description => "Save to file processor";
+        public string Description => "Save to file processor";
     }
 }

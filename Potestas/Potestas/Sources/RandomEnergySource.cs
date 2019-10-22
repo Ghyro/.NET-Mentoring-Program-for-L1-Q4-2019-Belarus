@@ -12,7 +12,7 @@ namespace Potestas.Sources
      * 1. Implement both IEnergyObservationSource and IEnergyObservationSourceEventSource interfaces.
      * 2. Try to implement it with abstract class or delegate parameters to make it universal.
      */
-    public class RandomEnergySource : IEnergyObservationSource<IEnergyObservation>
+    public class RandomEnergySource : IEnergyObservationSource
     {
         private readonly List<IObserver<IEnergyObservation>> _observers;
         private readonly List<IEnergyObservation> _energyObservations;

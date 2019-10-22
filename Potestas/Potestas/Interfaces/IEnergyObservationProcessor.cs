@@ -6,7 +6,7 @@ namespace Potestas.Interfaces
      * QUESTIONS:
      * What is the purpose of Observable pattern?
      */
-    public interface IEnergyObservationProcessor<in T> : IObserver<T> where T : IEnergyObservation
+    public interface IEnergyObservationProcessor<T> : IObserver<T> where T : IEnergyObservation
     {
         string Description { get; }
     }

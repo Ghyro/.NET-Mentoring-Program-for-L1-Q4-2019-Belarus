@@ -7,7 +7,7 @@ namespace Potestas.Interfaces
     {
         SourceStatus Status { get; }
 
-        IReadOnlyCollection<IProcessingGroup> ProcessingUnits { get; }
+        IReadOnlyCollection<IProcessingGroup<IEnergyObservation>> ProcessingUnits { get; }
 
         Task Start();
 
@@ -15,6 +15,7 @@ namespace Potestas.Interfaces
 
         void Unregister();
 
-        IProcessingGroup AttachProcessingGroup(IProcessingFactory factory);
+        IProcessingGroup<IEnergyObservation> AttachProcessingGroup(IProcessingFactory<IEnergyObservation> factory, IStorageFactory<IEnergyObservation> storageFactory,
+            IAnalizerFactory<IEnergyObservation> analizerFactory);
     }
 }

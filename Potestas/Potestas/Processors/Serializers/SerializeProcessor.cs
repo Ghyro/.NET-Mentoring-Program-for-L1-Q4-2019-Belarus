@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Potestas.Interfaces;
 
 namespace Potestas.Processors.Serializers
@@ -8,24 +9,57 @@ namespace Potestas.Processors.Serializers
      * 1. Use serialization mechanism here. 
      * 2. Some IEnergyObservation could not be serializable.
      */
-    public abstract class SerializeProcessor<T> : BaseProcessor<T> where T: IEnergyObservation
+    public class SerializeProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
     {
         private Stream _stream;
+
+        public SerializeProcessor(Stream stream)
+        {
+            Stream = stream;
+        }
 
         public Stream Stream
         {
             get => _stream;
-            set => _stream = value ?? throw new ArgumentNullException(nameof(value));
+            set
+            {
+                if (ReferenceEquals(value, null))                
+                    throw new NullReferenceException(nameof(value));              
+                _stream = value;
+            }
         }
 
-        public override void OnCompleted()
+        public virtual string Description { get; }
+
+        public void OnCompleted()
         {
             Console.WriteLine($"Serialize process {typeof(T)} completed");
         }
 
-        public override void OnError(Exception error)
+        public void OnError(Exception error)
         {
             Console.WriteLine($"Error appeared: {error}");
+        }
+
+        public virtual void OnNext(T value)
+        {
+            if (Stream == null)
+                throw new ArgumentNullException(nameof(Stream));      
+            if (!(Stream.CanRead && Stream.CanWrite))
+                throw new ArgumentException(nameof(Stream));
+        }
+
+        protected async Task<string> ReadAllStream(StreamReader reader)
+        {
+            var content = await reader.ReadToEndAsync().ConfigureAwait(false);
+            return content;
+        }
+
+        protected async Task WriteToStream(StreamWriter writer, string data)
+        {
+            Stream.Position = 0;
+            await writer.WriteAsync(data).ConfigureAwait(false);
+            await Stream.FlushAsync().ConfigureAwait(false);
         }
     }
 }
