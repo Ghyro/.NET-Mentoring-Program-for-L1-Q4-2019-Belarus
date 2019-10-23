@@ -2,9 +2,9 @@
 
 1. Introduction to program (done)
 
-2. .NET via C#
+2. .NET via C# (done)
 
-3. Basic XML
+3. Basic XML (in progress)
 
 4. SQL
 
