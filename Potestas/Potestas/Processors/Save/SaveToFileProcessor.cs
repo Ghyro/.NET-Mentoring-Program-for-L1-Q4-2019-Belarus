@@ -15,53 +15,77 @@ namespace Potestas.Processors.Save
      */
     public class SaveToFileProcessor<T> : IEnergyObservationProcessor<T> where T: IEnergyObservation
     {
-        protected IEnergyObservationProcessor<T> _processor;
-        private Stream _stream;
-        public string _fileName { get; set; }
+        private string _filePath;
+        private IEnergyObservation _observation;
+        private FileStream _fstream;
+        private IDisposable cancellation;
+        private SerializeProcessor<IEnergyObservation> _serializeProcessor;
+        private Stream stream;
 
-        public string FileName
+        public string FilePath
         {
-            get => _fileName ?? ConfigurationManager.AppSettings.Get("processorPath");
-            set => _fileName = value;
+            get => _filePath ?? ConfigurationManager.AppSettings.Get("processorPath");
+            set => _filePath = value;
         }
 
-        public SaveToFileProcessor(IEnergyObservationProcessor<T> processor)
+        public SaveToFileProcessor(string filePath)
         {
-            _processor = processor;
+            _filePath = filePath;
         }
+
+        public SaveToFileProcessor(SerializeProcessor<IEnergyObservation> serializeProcessor, string path)
+        {
+            _serializeProcessor = serializeProcessor;
+            FilePath = path;
+        }    
 
         public void OnCompleted()
         {
-            Console.WriteLine("SaveToFileProcessor is completed");
+            Unsubscribe();
         }
 
         public void OnError(Exception error)
         {
-            Console.WriteLine($"Error appeared: {error}");
+            _fstream?.Close();
         }
 
         public async void OnNext(T value)
         {
-            using (_stream = new FileStream(FileName, FileMode.OpenOrCreate))
+            if (ReferenceEquals(_serializeProcessor, null))
             {
-                if (ReferenceEquals(_processor, null))
+                using (stream = new FileStream(FilePath, FileMode.Append))
                 {
-                    var data = value.ToString();
-                    var bytes = Encoding.Default.GetBytes(data);
-                    await _stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                    using (var writer = new StreamWriter(stream))
+                    {
+                        await writer.WriteLineAsync(value.ToString()).ConfigureAwait(false);
+
+                        await writer.FlushAsync().ConfigureAwait(false);
+                    }
                 }
-                else
+            }
+            else
+            {
+                using (stream = new FileStream(FilePath, FileMode.OpenOrCreate))
                 {
-                    if (_processor is SerializeProcessor<T> processor)
-                        processor.Stream = _stream;
+                    if (_serializeProcessor is SerializeProcessor<T>)                    
+                        _serializeProcessor.Stream = stream;                    
 
-                    _processor.OnNext(value);
+                    _serializeProcessor.OnNext(value);
+
+                    stream.Close();
                 }
-
-                _stream.Close();
             }
         }
 
-        public string Description => "Save to file processor";
+        public virtual void Unsubscribe()
+        {
+            cancellation.Dispose();
+            _observation = null;
+            _fstream?.Close();
+            _serializeProcessor = null;
+        }
+        
+        public string Description => "SaveToFileProcessor";
     }
 }
+

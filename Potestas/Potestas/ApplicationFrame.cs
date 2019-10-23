@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Potestas.Interfaces;
-using Potestas.Processors.Serializers;
 
 namespace Potestas
 {

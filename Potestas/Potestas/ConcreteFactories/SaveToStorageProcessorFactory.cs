@@ -1,5 +1,4 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using Potestas.Analizers;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;

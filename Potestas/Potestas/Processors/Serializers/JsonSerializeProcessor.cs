@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using Newtonsoft.Json;
 using Potestas.Interfaces;
@@ -16,32 +17,37 @@ namespace Potestas.Processors.Serializers
             using (var reader = new StreamReader(Stream))
             using (var writer = new StreamWriter(Stream))
             {
-                string content;
+                string jsonContent;
                 if (Stream.Length > 0)
                 {
-                    content = ReadAllStream(reader).Result;
+                    jsonContent = ReadAllStream(reader).Result;
 
                     List<T> items;
+                    T item;
 
-                    if (content[0] == '[')
+                    if (jsonContent[0] == '[')
                     {
-                        items = JsonConvert.DeserializeObject<List<T>>(content);
+                        items = JsonConvert.DeserializeObject<List<T>>(jsonContent);
                         items.Add(value);
                     }
                     else
                     {
-                        var item = JsonConvert.DeserializeObject<T>(content);
-                        items = new List<T> {item, value};
+                        item = JsonConvert.DeserializeObject<T>(jsonContent);
+                        items = new List<T>
+                        {
+                            item,
+                            value
+                        };
                     }
 
-                    content = JsonConvert.SerializeObject(items, Formatting.Indented);
+                    jsonContent = JsonConvert.SerializeObject(items, Formatting.Indented);
                 }
                 else
                 {
-                    content = JsonConvert.SerializeObject(value, Formatting.Indented);
+                    jsonContent = JsonConvert.SerializeObject(value, Formatting.Indented);
                 }
 
-                WriteToStream(writer, content).Wait();
+                WriteToStream(writer, jsonContent).Wait();
             }
         }
     }
