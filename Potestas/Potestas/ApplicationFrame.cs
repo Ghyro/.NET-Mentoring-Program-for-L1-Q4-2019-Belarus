@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Potestas.Interfaces;
-using Potestas.Processors.Serializers;
 
 namespace Potestas
 {
@@ -24,14 +23,14 @@ namespace Potestas
         public IEnergyObservationAnalizer<IEnergyObservation> Analizer { get; }
 
         public RegisteredSourceProcessingGroup(RegisteredEnergyObservationSourceWrapper sourceRegistration,
-            IProcessingFactory<IEnergyObservation> factory,
-            IStorageFactory<IEnergyObservation> storageFactory,
-            IAnalizerFactory<IEnergyObservation> analizerFactory)
+            IProcessingFactory factory)
         {
             _sourceRegistration = sourceRegistration;            
-            Storage = storageFactory.CreateStorage();
+            Storage = factory.CreateStorage();
             Processor = factory.CreateProcessor();
-            Analizer = analizerFactory.CreateAnalizer(Storage);
+            Analizer = factory.CreateAnalizer();
+
+            _processorSubscription = _sourceRegistration.Subscribe(Processor);
         }
 
         public void Detach()
@@ -68,12 +67,9 @@ namespace Potestas
             return _inner.Subscribe(processor);
         }
 
-        public IProcessingGroup<IEnergyObservation> AttachProcessingGroup(IProcessingFactory<IEnergyObservation> factory,
-            IStorageFactory<IEnergyObservation> storageFactory,
-            IAnalizerFactory<IEnergyObservation> analizerFactory
-)
+        public IProcessingGroup<IEnergyObservation> AttachProcessingGroup(IProcessingFactory factory)
         {                                                                                                           
-            var processingGroup = new RegisteredSourceProcessingGroup(this, factory, storageFactory, analizerFactory);
+            var processingGroup = new RegisteredSourceProcessingGroup(this, factory);
             _processingGroups.Add(processingGroup);
             return processingGroup;
         }
@@ -112,37 +108,30 @@ namespace Potestas
     {
         private static readonly FactoriesLoader _factoriesLoader = new FactoriesLoader();
 
-        private readonly List<ISourceFactory<IEnergyObservation>> _sourceFactories;
-        private readonly List<IProcessingFactory<IEnergyObservation>> _processingFactories;
+        private readonly List<ISourceFactory> _sourceFactories;
+        private readonly List<IProcessingFactory> _processingFactories;
         private readonly List<RegisteredEnergyObservationSourceWrapper> _registeredSources;
-        private readonly List<IAnalizerFactory<IEnergyObservation>> _analizerFactories;
-        private readonly List<IStorageFactory<IEnergyObservation>> _storageFactories;
 
-        public IReadOnlyCollection<ISourceFactory<IEnergyObservation>> SourceFactories => _sourceFactories.AsReadOnly();
-        public IReadOnlyCollection<IProcessingFactory<IEnergyObservation>> ProcessingFactories => _processingFactories.AsReadOnly();
+        public IReadOnlyCollection<ISourceFactory> SourceFactories => _sourceFactories.AsReadOnly();
+        public IReadOnlyCollection<IProcessingFactory> ProcessingFactories => _processingFactories.AsReadOnly();
         public IReadOnlyCollection<ISourceRegistration> RegisteredSources => _registeredSources.AsReadOnly();
-        public IReadOnlyCollection<IStorageFactory<IEnergyObservation>> StorageFactories => _storageFactories.AsReadOnly();
-        public IReadOnlyCollection<IAnalizerFactory<IEnergyObservation>> AnalizerFactories => _analizerFactories.AsReadOnly();
+        
 
         public ApplicationFrame()
         {
             _registeredSources = new List<RegisteredEnergyObservationSourceWrapper>();
-            _processingFactories = new List<IProcessingFactory<IEnergyObservation>>();
-            _sourceFactories = new List<ISourceFactory<IEnergyObservation>>();
-            _storageFactories = new List<IStorageFactory<IEnergyObservation>>();
-            _analizerFactories = new List<IAnalizerFactory<IEnergyObservation>>();
+            _processingFactories = new List<IProcessingFactory>();
+            _sourceFactories = new List<ISourceFactory>();
         }
 
         public void LoadPlugin(Assembly assembly)
         {
-            var (sourceFactories, processingFactories, storageFactories, analizerFactories) = _factoriesLoader.Load(assembly);
+            var (sourceFactories, processingFactories) = _factoriesLoader.Load(assembly);
             _processingFactories.AddRange(processingFactories);
             _sourceFactories.AddRange(sourceFactories);
-            _storageFactories.AddRange(storageFactories);
-            _analizerFactories.AddRange(analizerFactories);
         }
 
-        public ISourceRegistration CreateAndRegisterSource(ISourceFactory<IEnergyObservation> factory)
+        public ISourceRegistration CreateAndRegisterSource(ISourceFactory factory)
         {
             var source = factory.CreateSource();
             var registration = new RegisteredEnergyObservationSourceWrapper(this, source);

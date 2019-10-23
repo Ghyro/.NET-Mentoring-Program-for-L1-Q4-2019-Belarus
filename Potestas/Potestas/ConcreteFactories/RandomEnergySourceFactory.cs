@@ -4,9 +4,9 @@ using System;
 
 namespace Potestas.ConcreteFactories
 {
-    public class RandomEnergySourceFactory<T> : ISourceFactory<T> where T : IEnergyObservation
+    public class RandomEnergySourceFactory : ISourceFactory
     {
-        public IEnergyObservationEventSource<T> CreateEventSource()
+        public IEnergyObservationEventSource<IEnergyObservation> CreateEventSource()
         {
             throw new NotImplementedException();
         }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Potestas.Interfaces;
+using Potestas.Observations;
 
 namespace Potestas.Processors.Serializers
 {
@@ -16,34 +18,53 @@ namespace Potestas.Processors.Serializers
             using (var reader = new StreamReader(Stream))
             using (var writer = new StreamWriter(Stream))
             {
-                string content;
+                string jsonContent;
                 if (Stream.Length > 0)
                 {
-                    content = this.ReadAllStream(reader).Result;
+                    jsonContent = ReadAllStream(reader).Result;
 
                     List<T> items;
 
-                    if (content[0] == '[')
+                    var settings = new JsonSerializerSettings
                     {
-                        items = JsonConvert.DeserializeObject<List<T>>(content);
-                        items = JsonConvert.DeserializeObject<List<T>>(content);
+                        Converters = {
+                            new AbstractConverter<FlashObservation, IEnergyObservation>()
+                        }
+                    };
+
+                    if (jsonContent[0] == '[')
+                    {
+                        items = JsonConvert.DeserializeObject<List<T>>(jsonContent, settings);
                         items.Add(value);
                     }
                     else
                     {
-                        var item = JsonConvert.DeserializeObject<T>(content);
-                        items = new List<T> {item, value};
+                        var item = JsonConvert.DeserializeObject<T>(jsonContent, settings);
+                        items = new List<T>
+                        {
+                            item,
+                            value
+                        };
                     }
 
-                    content = JsonConvert.SerializeObject(items, Formatting.Indented);
+                    jsonContent = JsonConvert.SerializeObject(items, Formatting.Indented);
                 }
                 else
                 {
-                    content = JsonConvert.SerializeObject(value, Formatting.Indented);
+                    jsonContent = JsonConvert.SerializeObject(value, Formatting.Indented);
                 }
 
-                WriteToStream(writer, content).Wait();
+                WriteToStream(writer, jsonContent).Wait();
             }
+        }
+
+        private class AbstractConverter<TReal, TAbstract> : JsonConverter where TReal : TAbstract
+        {
+            public override bool CanConvert(Type objectType) => objectType == typeof(TAbstract);
+
+            public override object ReadJson(JsonReader reader, Type type, object value, JsonSerializer jser) => jser.Deserialize<TReal>(reader);
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer jser) => jser.Serialize(writer, value);
         }
     }
 }

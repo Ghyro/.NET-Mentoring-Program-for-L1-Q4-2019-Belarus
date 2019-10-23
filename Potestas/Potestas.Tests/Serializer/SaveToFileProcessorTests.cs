@@ -1,8 +1,10 @@
 ﻿using NUnit.Framework;
+using Potestas.Interfaces;
 using Potestas.Observations;
 using Potestas.Processors.Save;
 using Potestas.Processors.Serializers;
 using System;
+using System.Configuration;
 using System.IO;
 
 namespace Potestas.Tests.Serializer
@@ -19,11 +21,12 @@ namespace Potestas.Tests.Serializer
         public void SaveToFileProcessor_SaveToTxtFile_WithoutDecorate(double x, double y, double intensity, int duration)
         {
             // Arrange
-            var processor = new SaveToFileProcessor<FlashObservation>(null);
+            var processor = new SaveToFileProcessor<FlashObservation>(new JsonSerializeProcessor<IEnergyObservation>(),
+                ConfigurationManager.AppSettings["processorPath"]);
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
             // Act
-            processor.FileName = FileName;
+            processor.FilePath = FileName;
             processor.OnNext(observation);
 
             // Assert
@@ -37,12 +40,12 @@ namespace Potestas.Tests.Serializer
         {
             // Arrange
             var fileStream = new FileStream(FileName, FileMode.OpenOrCreate);
-            var serializer = new JsonSerializeProcessor<FlashObservation> { Stream = fileStream };
-            var processor = new SaveToFileProcessor<FlashObservation>(serializer);
+            var serializer = new JsonSerializeProcessor<IEnergyObservation> { Stream = fileStream };
+            var processor = new SaveToFileProcessor<IEnergyObservation>(serializer, ConfigurationManager.AppSettings.Get("processorPath"));
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
             // Act
-            processor.FileName = JsonFileName;
+            processor.FilePath = JsonFileName;
             processor.OnNext(observation);
 
             // Assert

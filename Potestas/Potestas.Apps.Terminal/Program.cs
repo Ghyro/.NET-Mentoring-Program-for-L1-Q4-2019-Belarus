@@ -1,7 +1,10 @@
 ﻿using System;
+using Potestas.Analizers;
 using Potestas.ConcreteFactories;
 using Potestas.Interfaces;
+using Potestas.Processors.Save;
 using Potestas.Sources;
+using Potestas.Storages;
 
 namespace Potestas.Apps.Terminal
 {
@@ -19,7 +22,7 @@ namespace Potestas.Apps.Terminal
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory(), new ListStorageFactory<IEnergyObservation>(), new LINQAnalizerFactory<IEnergyObservation>());
+            _testRegistration.AttachProcessingGroup(new SaveToFileProcessorFactory());
             _testRegistration.Start().Wait();
         }
 
@@ -31,7 +34,7 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    internal class ConsoleSourceFactory : ISourceFactory<IEnergyObservation>
+    internal class ConsoleSourceFactory : ISourceFactory
     {
         public IEnergyObservationEventSource<IEnergyObservation> CreateEventSource()
         {
@@ -44,11 +47,25 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    internal class ConsoleProcessingFactory : IProcessingFactory<IEnergyObservation>
+    internal class ConsoleProcessingFactory : IProcessingFactory
     {
-        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor(IStorageFactory<IEnergyObservation> storageFactory = null, IProcessingFactory<IEnergyObservation> processorFactory = null)
+        private IEnergyObservationStorage<IEnergyObservation> _storage = null;
+
+        public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
+        {
+            return new LINQAnalizer<IEnergyObservation>(CreateStorage());
+        }
+
+        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
             return new ConsoleProcessor();
+        }
+
+        public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
+        {
+            if (_storage == null)
+                _storage = new ListStorage<IEnergyObservation>();
+            return _storage;
         }
     }
 }

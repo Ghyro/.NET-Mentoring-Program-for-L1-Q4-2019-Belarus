@@ -117,15 +117,15 @@ namespace Potestas.Storages
         }
 
         #region private
-        private bool ReadFromFile()
+        private void ReadFromFile()
         {
             if (File.Exists(_filePath))
                 using (var stream = new FileStream(_filePath, FileMode.OpenOrCreate))
                 {
                     if (stream.Length <= 0)
-                        return false;
+                        return;
 
-                    var content = default(string);
+                    var content = string.Empty;
 
                     using (var streamReader = new StreamReader(stream))
                     {
@@ -133,11 +133,8 @@ namespace Potestas.Storages
                     }
 
                     _observation.Clear();
-                    _observation.AddRange(JsonConvert.DeserializeObject<List<T>>(content));
-                    return true;
+                    _observation.AddRange(JsonConvert.DeserializeObject<List<T>>(content));                    
                 }
-
-            return false;
         }
 
         private void WriteToFile()
