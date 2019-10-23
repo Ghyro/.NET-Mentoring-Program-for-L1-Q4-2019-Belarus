@@ -1,90 +1,105 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Potestas.Interfaces;
 
 namespace Potestas.Analizers
 {
     /* TASK. Implement an Analizer for Observations using LINQ
      */
-    public class LINQAnalizer : IEnergyObservationAnalizer
+    public class LINQAnalizer<T> : IEnergyObservationAnalizer<T> where T: IEnergyObservation
     {
+        private readonly IEnergyObservationStorage<IEnergyObservation> _observations;
+
+        public LINQAnalizer(IEnergyObservationStorage<IEnergyObservation> observations)
+        {
+            _observations = observations;
+        }
+
         public double GetAverageEnergy()
         {
-            throw new NotImplementedException();
+            return _observations.Average(x => x.EstimatedValue);
         }
 
         public double GetAverageEnergy(DateTime startFrom, DateTime endBy)
         {
-            throw new NotImplementedException();
+            var resultObservations = _observations.Where(x => x.ObservationTime > startFrom && x.ObservationTime < endBy).ToList();
+
+            return resultObservations.Sum(x => x.EstimatedValue) / resultObservations.Count();
         }
 
         public double GetAverageEnergy(Coordinates rectTopLeft, Coordinates rectBottomRight)
         {
-            throw new NotImplementedException();
+            var resultObservations = _observations.Where(x => x.ObservationPoint.X > rectTopLeft.X && x.ObservationPoint.X < rectBottomRight.X
+                                                     && x.ObservationPoint.Y < rectTopLeft.Y && x.ObservationPoint.Y > rectBottomRight.Y)
+                                                     .ToList();
+
+            return resultObservations.Sum(x => x.EstimatedValue) / resultObservations.Count();
         }
 
         public IDictionary<Coordinates, int> GetDistributionByCoordinates()
         {
-            throw new NotImplementedException();
+            return _observations.GroupBy(x => x.ObservationPoint).ToDictionary(y => y.Key, s => s.Count());
         }
 
         public IDictionary<double, int> GetDistributionByEnergyValue()
         {
-            throw new NotImplementedException();
+            return _observations.GroupBy(x => x.EstimatedValue).ToDictionary(y => y.Key, s => s.Count());
         }
 
         public IDictionary<DateTime, int> GetDistributionByObservationTime()
         {
-            throw new NotImplementedException();
+            return _observations.GroupBy(x => x.ObservationTime).ToDictionary(y => y.Key, s => s.Count());
         }
 
         public double GetMaxEnergy()
         {
-            throw new NotImplementedException();
+            return _observations.Max(x => x.EstimatedValue);
         }
 
         public double GetMaxEnergy(Coordinates coordinates)
         {
-            throw new NotImplementedException();
+            return _observations.Where(x => x.ObservationPoint.Equals(coordinates)).Max(s => s.EstimatedValue);
         }
 
         public double GetMaxEnergy(DateTime dateTime)
         {
-            throw new NotImplementedException();
+            return _observations.Where(x => x.ObservationTime.Equals(dateTime)).Max(s => s.EstimatedValue);
         }
 
         public Coordinates GetMaxEnergyPosition()
         {
-            throw new NotImplementedException();
+            return _observations.First(x => Math.Abs(x.EstimatedValue - _observations.Max(v => v.EstimatedValue)) < 0.001).ObservationPoint;
         }
 
         public DateTime GetMaxEnergyTime()
         {
-            throw new NotImplementedException();
+            return _observations.First(x => Math.Abs(x.EstimatedValue - _observations.Max(v => v.EstimatedValue)) < 0.001).ObservationTime;
         }
 
         public double GetMinEnergy()
         {
-            throw new NotImplementedException();
+            return _observations.Min(x => x.EstimatedValue);
         }
 
         public double GetMinEnergy(Coordinates coordinates)
         {
-            throw new NotImplementedException();
+            return _observations.Where(x => x.ObservationPoint.Equals(coordinates)).Min(s => s.EstimatedValue);
         }
 
         public double GetMinEnergy(DateTime dateTime)
         {
-            throw new NotImplementedException();
+            return _observations.Where(x => x.ObservationTime.Equals(dateTime)).Min(s => s.EstimatedValue);
         }
 
         public Coordinates GetMinEnergyPosition()
         {
-            throw new NotImplementedException();
+            return _observations.First(x => Math.Abs(x.EstimatedValue - _observations.Min(v => v.EstimatedValue)) < 0.001).ObservationPoint;
         }
 
         public DateTime GetMinEnergyTime()
         {
-            throw new NotImplementedException();
+            return _observations.First(x => Math.Abs(x.EstimatedValue - _observations.Min(v => v.EstimatedValue)) < 0.001).ObservationTime;
         }
     }
 }

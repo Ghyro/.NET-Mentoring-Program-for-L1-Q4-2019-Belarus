@@ -1,4 +1,8 @@
-﻿namespace Potestas
+﻿using Potestas.Interfaces;
+using Potestas.Processors.Serializers;
+using System.IO;
+
+namespace Potestas
 {
     /* TASK. Refactor these interfaces to create families of IObserver, IObservable and IObservationsRepository as a single responsibility. 
      * QUESTIONS:
@@ -9,15 +13,15 @@
     {
         IEnergyObservationSource CreateSource();
 
-        IEnergyObservationEventSource CreateEventSource();
+        IEnergyObservationEventSource<IEnergyObservation> CreateEventSource();
     }
 
     public interface IProcessingFactory
     {
-        IEnergyObservationProcessor CreateProcessor();
+        IEnergyObservationProcessor<IEnergyObservation> CreateProcessor();
 
-        IEnergyObservationStorage CreateStorage();
+        IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer();
 
-        IEnergyObservationAnalizer CreateAnalizer();
+        IEnergyObservationStorage<IEnergyObservation> CreateStorage();
     }
 }

@@ -1,52 +1,159 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using Potestas.Interfaces;
 
 namespace Potestas.Storages
 {
     /* TASK. Implement file storage
      */
-    class FileStorage : IEnergyObservationStorage
+    public class FileStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
-        public string Description => throw new NotImplementedException();
+        private readonly string _filePath;
+        private readonly List<T> _observation;
 
-        public int Count => throw new NotImplementedException();
-
-        public bool IsReadOnly => throw new NotImplementedException();
-
-        public void Add(IEnergyObservation item)
+        public FileStorage(string filePath)
         {
-            throw new NotImplementedException();
+            _filePath = filePath;
+            _observation = new List<T>();
+            ReadFromFile();
+        }
+        public T this[int index]
+        {
+            get => _observation[index];
+            set => _observation[index] = value;
+        }
+
+        public string Description => "File storage";
+
+        public int Count => _observation.Count;
+
+        public bool IsReadOnly => false;
+
+        public void Add(T item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            _observation.Add(item);
+            WriteToFile();
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            _observation.Clear();
+            ClearFile();
         }
 
-        public bool Contains(IEnergyObservation item)
+        public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            return _observation.Contains(item);
         }
 
-        public void CopyTo(IEnergyObservation[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            if (arrayIndex > _observation.Count)
+            {
+                _observation.AddRange(array);
+            }
+            else
+            {
+                if (arrayIndex < 0)                
+                    arrayIndex = 0;              
+                _observation.InsertRange(arrayIndex, array);
+            }
+
+            WriteToFile();
         }
 
-        public IEnumerator<IEnergyObservation> GetEnumerator()
+        public T GetByHash(int hashCode)
         {
-            throw new NotImplementedException();
+            return _observation.SingleOrDefault(item => item.GetHashCode() == hashCode);
         }
 
-        public bool Remove(IEnergyObservation item)
+        public bool Remove(T item)
         {
-            throw new NotImplementedException();
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));           
+
+            try
+            {
+                var removeItem = GetByHash(item.GetHashCode());
+
+                if (removeItem == null)
+                    throw new ArgumentNullException(nameof(item));
+
+                _observation.Remove(removeItem);
+
+                WriteToFile();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }            
+        }
+
+        public IEnumerable<T> GetAll()
+        {
+            return _observation;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _observation.GetEnumerator();
         }
+
+        #region private
+        private void ReadFromFile()
+        {
+            if (File.Exists(_filePath))
+                using (var stream = new FileStream(_filePath, FileMode.OpenOrCreate))
+                {
+                    if (stream.Length <= 0)
+                        return;
+
+                    var content = string.Empty;
+
+                    using (var streamReader = new StreamReader(stream))
+                    {
+                        content = streamReader.ReadToEnd();
+                    }
+
+                    _observation.Clear();
+                    _observation.AddRange(JsonConvert.DeserializeObject<List<T>>(content));                    
+                }
+        }
+
+        private void WriteToFile()
+        {
+            var fileMode = File.Exists(_filePath) ? FileMode.Truncate : FileMode.Create;
+
+            using (var stream = new FileStream(_filePath, fileMode))
+            {
+                var content = JsonConvert.SerializeObject(_observation);
+                using (var streamWriter = new StreamWriter(stream))
+                    streamWriter.Write(content);
+            }
+        }
+
+        private void ClearFile()
+        {
+            if (File.Exists(_filePath))
+                using (var stream = new FileStream(_filePath, FileMode.Truncate)) { }
+        }
+        #endregion
     }
 }

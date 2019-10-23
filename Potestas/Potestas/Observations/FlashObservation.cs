@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.Serialization;
+using Potestas.Interfaces;
 
 namespace Potestas.Observations
 {
@@ -19,16 +21,116 @@ namespace Potestas.Observations
     * Why immutable structure is used here?
     * TESTS: Cover this structure with unit tests
     */
+
+    [DataContract]
     public struct FlashObservation : IEnergyObservation
     {
-        public Coordinates ObservationPoint { get; }
+        private const int MAX_INTENSITY = 2000000000;
+        private double _intensity;
+        private int _durationMs;
+        private DateTime _observationTime;
 
-        public double Intensity { get; }
+        public FlashObservation(DateTime observationTime) : this()
+        {
+            ObservationTime = observationTime;
+        }
 
-        public int DurationMs { get; }
+        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime) : this()
+        {
+            DurationMs = durationMs;
+            Intensity = intensity;
+            ObservationPoint = observationPoint;
+            ObservationTime = observationTime;
+        }
 
-        public DateTime ObservationTime { get; }
+        [DataMember]
+        public Coordinates ObservationPoint { get; set; }
 
-        public double EstimatedValue => throw new NotImplementedException();
+        [DataMember]
+        public double Intensity
+        {
+            get => _intensity;
+            set
+            {
+                if (value > MAX_INTENSITY || value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                _intensity = value;
+            }
+        }
+
+        [DataMember]
+        public int DurationMs
+        {
+            get => _durationMs;
+            set => _durationMs = value;
+        }
+
+        [DataMember]
+        public DateTime ObservationTime
+        {
+            get => _observationTime;
+            set => _observationTime = value;
+        }
+
+        [DataMember]
+        public double EstimatedValue
+        {
+            get
+            {
+                checked
+                {
+                    return _intensity * _durationMs;
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return
+                $"ObservationPoint X - Y: {ObservationPoint.X.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}" +
+                $" - {ObservationPoint.Y.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)}," +
+                $" Intensity: {_intensity}, Duration ms: {_intensity}," +
+                $" Observation time: {_observationTime.Date:MM/dd/yyyy}, Estimated value: {EstimatedValue}";
+        }
+
+        public bool Equals(FlashObservation other)
+        {
+            return
+                ObservationPoint.Equals(other.ObservationPoint)
+                && ObservationTime.Equals(other._observationTime)
+                && EstimatedValue.Equals(other.EstimatedValue);
+        }
+
+        public static bool operator ==(FlashObservation flashObservation1, FlashObservation flashObservation2)
+        {
+            return flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint)
+                   && flashObservation1.ObservationTime.Equals(flashObservation2.ObservationTime)
+                   && flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
+        }
+
+        public static bool operator !=(FlashObservation flashObservation1, FlashObservation flashObservation2)
+        {
+            return !flashObservation1.ObservationPoint.Equals(flashObservation2.ObservationPoint)
+                   && !flashObservation1.ObservationTime.Equals(flashObservation2.ObservationTime)
+                   && !flashObservation1.EstimatedValue.Equals(flashObservation2.EstimatedValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is FlashObservation && Equals((FlashObservation)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = _intensity.GetHashCode();
+                hashCode = (hashCode * 397) ^ _durationMs;
+                hashCode = (hashCode * 397) ^ _observationTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ ObservationPoint.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 }

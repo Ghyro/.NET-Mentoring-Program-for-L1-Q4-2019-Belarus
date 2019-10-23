@@ -1,10 +1,14 @@
-﻿using Potestas.Analizers;
+﻿using System;
+using Potestas.Analizers;
+using Potestas.ConcreteFactories;
+using Potestas.Interfaces;
+using Potestas.Processors.Save;
+using Potestas.Sources;
 using Potestas.Storages;
-using System;
 
 namespace Potestas.Apps.Terminal
 {
-    static class Program
+    internal static class Program
     {
         private static readonly IEnergyObservationApplicationModel _app;
         private static ISourceRegistration _testRegistration;
@@ -14,11 +18,11 @@ namespace Potestas.Apps.Terminal
             _app = new ApplicationFrame();
         }
 
-        static void Main()
+        private static void Main()
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory());
+            _testRegistration.AttachProcessingGroup(new SaveToFileProcessorFactory());
             _testRegistration.Start().Wait();
         }
 
@@ -30,34 +34,38 @@ namespace Potestas.Apps.Terminal
         }
     }
 
-    class ConsoleSourceFactory : ISourceFactory
+    internal class ConsoleSourceFactory : ISourceFactory
     {
-        public IEnergyObservationEventSource CreateEventSource()
+        public IEnergyObservationEventSource<IEnergyObservation> CreateEventSource()
         {
             throw new NotImplementedException();
         }
 
         public IEnergyObservationSource CreateSource()
         {
-            return new ConsoleSource();
+            return new RandomEnergySource();
         }
     }
 
-    class ConsoleProcessingFactory : IProcessingFactory
+    internal class ConsoleProcessingFactory : IProcessingFactory
     {
-        public IEnergyObservationAnalizer CreateAnalizer()
+        private IEnergyObservationStorage<IEnergyObservation> _storage = null;
+
+        public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
         {
-            return new LINQAnalizer();
+            return new LINQAnalizer<IEnergyObservation>(CreateStorage());
         }
 
-        public IEnergyObservationProcessor CreateProcessor()
+        public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
             return new ConsoleProcessor();
         }
 
-        public IEnergyObservationStorage CreateStorage()
+        public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
-            return new ListStorage();
+            if (_storage == null)
+                _storage = new ListStorage<IEnergyObservation>();
+            return _storage;
         }
     }
 }
