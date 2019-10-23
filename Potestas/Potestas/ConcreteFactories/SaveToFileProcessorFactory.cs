@@ -19,7 +19,7 @@ namespace Potestas.ConcreteFactories
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
-            return new SaveToFileProcessor<IEnergyObservation>(new JsonSerializeProcessor<IEnergyObservation>()
+            return new SaveToFileProcessor<IEnergyObservation>(new JsonSerializeProcessor<IEnergyObservation>
             {
                 Stream = new FileStream(ConfigurationManager.AppSettings["storagePath"], FileMode.OpenOrCreate)
             }, ConfigurationManager.AppSettings["processorPath"]);

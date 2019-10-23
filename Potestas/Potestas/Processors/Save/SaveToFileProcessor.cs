@@ -20,17 +20,12 @@ namespace Potestas.Processors.Save
         private FileStream _fstream;
         private IDisposable cancellation;
         private SerializeProcessor<IEnergyObservation> _serializeProcessor;
-        private Stream stream;
+        private Stream _stream;
 
         public string FilePath
         {
             get => _filePath ?? ConfigurationManager.AppSettings.Get("processorPath");
             set => _filePath = value;
-        }
-
-        public SaveToFileProcessor(string filePath)
-        {
-            _filePath = filePath;
         }
 
         public SaveToFileProcessor(SerializeProcessor<IEnergyObservation> serializeProcessor, string path)
@@ -53,9 +48,9 @@ namespace Potestas.Processors.Save
         {
             if (ReferenceEquals(_serializeProcessor, null))
             {
-                using (stream = new FileStream(FilePath, FileMode.Append))
+                using (_stream = new FileStream(FilePath, FileMode.Append))
                 {
-                    using (var writer = new StreamWriter(stream))
+                    using (var writer = new StreamWriter(_stream))
                     {
                         await writer.WriteLineAsync(value.ToString()).ConfigureAwait(false);
 
@@ -65,14 +60,14 @@ namespace Potestas.Processors.Save
             }
             else
             {
-                using (stream = new FileStream(FilePath, FileMode.OpenOrCreate))
+                using (_stream = new FileStream(FilePath, FileMode.OpenOrCreate))
                 {
                     if (_serializeProcessor is SerializeProcessor<T>)                    
-                        _serializeProcessor.Stream = stream;                    
+                        _serializeProcessor.Stream = _stream;                    
 
                     _serializeProcessor.OnNext(value);
 
-                    stream.Close();
+                    _stream.Close();
                 }
             }
         }

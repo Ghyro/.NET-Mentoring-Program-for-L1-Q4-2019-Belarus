@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Potestas.Interfaces;
+using Potestas.Observations;
 
 namespace Potestas.Processors.Serializers
 {
@@ -23,16 +24,22 @@ namespace Potestas.Processors.Serializers
                     jsonContent = ReadAllStream(reader).Result;
 
                     List<T> items;
-                    T item;
+
+                    var settings = new JsonSerializerSettings
+                    {
+                        Converters = {
+                            new AbstractConverter<FlashObservation, IEnergyObservation>()
+                        }
+                    };
 
                     if (jsonContent[0] == '[')
                     {
-                        items = JsonConvert.DeserializeObject<List<T>>(jsonContent);
+                        items = JsonConvert.DeserializeObject<List<T>>(jsonContent, settings);
                         items.Add(value);
                     }
                     else
                     {
-                        item = JsonConvert.DeserializeObject<T>(jsonContent);
+                        var item = JsonConvert.DeserializeObject<T>(jsonContent, settings);
                         items = new List<T>
                         {
                             item,
@@ -49,6 +56,15 @@ namespace Potestas.Processors.Serializers
 
                 WriteToStream(writer, jsonContent).Wait();
             }
+        }
+
+        private class AbstractConverter<TReal, TAbstract> : JsonConverter where TReal : TAbstract
+        {
+            public override bool CanConvert(Type objectType) => objectType == typeof(TAbstract);
+
+            public override object ReadJson(JsonReader reader, Type type, object value, JsonSerializer jser) => jser.Deserialize<TReal>(reader);
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer jser) => jser.Serialize(writer, value);
         }
     }
 }

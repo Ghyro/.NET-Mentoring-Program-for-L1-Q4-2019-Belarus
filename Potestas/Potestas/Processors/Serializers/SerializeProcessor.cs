@@ -36,7 +36,7 @@ namespace Potestas.Processors.Serializers
 
         public virtual void OnNext(T value)
         {
-            if (Stream == null || !(Stream.CanRead && Stream.CanWrite))
+            if (_stream == null || !(_stream.CanRead && _stream.CanWrite))
                 throw new Exception();
         }
 
@@ -50,7 +50,7 @@ namespace Potestas.Processors.Serializers
 
         protected async Task WriteToStream(StreamWriter writer, string data)
         {
-            Stream.Position = 0;
+            _stream.Position = 0;
             await writer.WriteAsync(data).ConfigureAwait(false);
             await Stream.FlushAsync().ConfigureAwait(false);
         }
