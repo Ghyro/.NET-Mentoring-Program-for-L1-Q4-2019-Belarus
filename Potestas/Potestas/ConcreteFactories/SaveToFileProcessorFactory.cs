@@ -10,26 +10,24 @@ namespace Potestas.ConcreteFactories
 {
     public class SaveToFileProcessorFactory : IProcessingFactory
     {
-        private IEnergyObservationStorage<IEnergyObservation> _storage = null;
+        private IEnergyObservationStorage<IEnergyObservation> _storage;
 
         public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
         {
-            return new LINQAnalizer<IEnergyObservation>(CreateStorage());
+            return new LINQAnalyzer<IEnergyObservation>(CreateStorage());
         }
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
-            return new SaveToFileProcessor<IEnergyObservation>(new JsonSerializeProcessor<IEnergyObservation>
+            return new SaveToFileProcessor<IEnergyObservation>(new SerializeToXMLProcessor<IEnergyObservation>
             {
-                Stream = new FileStream(ConfigurationManager.AppSettings["storagePath"], FileMode.OpenOrCreate)
-            }, ConfigurationManager.AppSettings["processorPath"]);
+                Stream = new FileStream(ConfigurationManager.AppSettings["xmlStoragePath"], FileMode.OpenOrCreate)
+            });
         }
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
-            if (_storage == null)
-                _storage = new FileStorage<IEnergyObservation>(ConfigurationManager.AppSettings["storagePath"]);
-            return _storage;
+            return _storage ?? (_storage = new XmlFileStorage<IEnergyObservation>());
         }
     }
 }

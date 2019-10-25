@@ -21,8 +21,7 @@ namespace Potestas.Tests.Serializer
         public void SaveToFileProcessor_SaveToTxtFile_WithoutDecorate(double x, double y, double intensity, int duration)
         {
             // Arrange
-            var processor = new SaveToFileProcessor<FlashObservation>(new JsonSerializeProcessor<IEnergyObservation>(),
-                ConfigurationManager.AppSettings["processorPath"]);
+            var processor = new SaveToFileProcessor<FlashObservation>(new JsonSerializeProcessor<IEnergyObservation>());
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
             // Act
@@ -41,7 +40,7 @@ namespace Potestas.Tests.Serializer
             // Arrange
             var fileStream = new FileStream(FileName, FileMode.OpenOrCreate);
             var serializer = new JsonSerializeProcessor<IEnergyObservation> { Stream = fileStream };
-            var processor = new SaveToFileProcessor<IEnergyObservation>(serializer, ConfigurationManager.AppSettings.Get("processorPath"));
+            var processor = new SaveToFileProcessor<IEnergyObservation>(serializer);
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
             // Act

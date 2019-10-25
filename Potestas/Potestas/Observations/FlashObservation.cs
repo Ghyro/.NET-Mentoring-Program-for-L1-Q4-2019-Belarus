@@ -23,6 +23,7 @@ namespace Potestas.Observations
     */
 
     [DataContract]
+    [Serializable]
     public struct FlashObservation : IEnergyObservation
     {
         private const int MAX_INTENSITY = 2000000000;
