@@ -18,7 +18,7 @@ namespace Potestas.Processors.Serializers
             using (var reader = new StreamReader(Stream))
             using (var writer = new StreamWriter(Stream))
             {
-                string content;
+                string content = string.Empty;
 
                 var settings = new JsonSerializerSettings
                 {

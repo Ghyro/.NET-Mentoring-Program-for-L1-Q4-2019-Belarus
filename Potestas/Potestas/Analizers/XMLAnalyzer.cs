@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Xml.Linq;
 using Potestas.Interfaces;
 
@@ -8,92 +9,159 @@ namespace Potestas.Analizers
 {
     public class XMLAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
     {
-        private readonly string _filePath;
         private readonly XDocument _xdoc;
+        private const string OBSERVATIONS = "Observations";
+        private const string FLASH_OBSERVATIONS = "FlashObservation";
+        private const string OBSERVATION_TIME = "ObservationTime";
+        private const string ESTIMATED_VALUE = "EstimatedValue";
+        private const string OBSERVATION_POINT = "ObservationPoint";
 
         public XMLAnalyzer()
         {
-            _filePath = ConfigurationManager.AppSettings["xmlStoragePath"];
-            _xdoc = new XDocument(_filePath);
+            _xdoc = XDocument.Load(ConfigurationManager.AppSettings["xmlStoragePath"]);
         }
+
         public double GetAverageEnergy()
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
+                       .Elements(ESTIMATED_VALUE).Average(x => double.Parse(x.Value));
         }
 
         public double GetAverageEnergy(DateTime startFrom, DateTime endBy)
         {
-            throw new NotImplementedException();
+            var resultObservations = _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
+                                        .Where(x => (DateTime)x.Element(OBSERVATION_TIME) > startFrom
+                                        && (DateTime)x.Element(OBSERVATION_TIME) < endBy)
+                                        .ToList();
+            return resultObservations.Sum(x => (double)x.Element(ESTIMATED_VALUE)) / resultObservations.Count;
         }
 
         public double GetAverageEnergy(Coordinates rectTopLeft, Coordinates rectBottomRight)
         {
-            throw new NotImplementedException();
+            var resultObservations = _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
+                                        .Where(x => (double)x.Element(OBSERVATION_POINT).Element("X") > rectTopLeft.X
+                                        && (double)x.Element(OBSERVATION_POINT).Element("Y") < rectBottomRight.X
+                                        && (double)x.Element(OBSERVATION_POINT).Element("Y") < rectTopLeft.Y
+                                        && (double)x.Element(OBSERVATION_POINT).Element("Y") > rectBottomRight.Y).ToList();
+            return resultObservations.Sum(x => (double)x.Element(OBSERVATION_POINT)) / resultObservations.Count;
         }
 
         public IDictionary<Coordinates, int> GetDistributionByCoordinates()
-        {
-            throw new NotImplementedException();
+        {            
+            Func<XElement, Coordinates> creator = item =>
+            {
+                return new Coordinates
+                {
+                    X = (double)item.Element("X"),
+                    Y = (double)item.Element("Y")
+                };
+            };
+
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).GroupBy(creator).ToDictionary(x => x.Key, v => v.Count());
         }
 
         public IDictionary<double, int> GetDistributionByEnergyValue()
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).GroupBy(x => (double)x.Element(ESTIMATED_VALUE)).ToDictionary(x => x.Key, v => v.Count());
         }
 
         public IDictionary<DateTime, int> GetDistributionByObservationTime()
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).GroupBy(x => (DateTime)x.Element(OBSERVATION_TIME)).ToDictionary(x => x.Key, v => v.Count());
         }
 
         public double GetMaxEnergy()
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
+                        .Elements(ESTIMATED_VALUE).Max(x => double.Parse(x.Value));
         }
 
         public double GetMaxEnergy(Coordinates coordinates)
         {
-            throw new NotImplementedException();
+            Func<XElement, bool> expression = item =>
+            {
+                var flashCoordinatis = new Coordinates
+                {
+                    X = (double)item.Element("X"),
+                    Y = (double)item.Element("Y")
+                };
+
+                return flashCoordinatis == coordinates;
+            };
+
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
+                .Where(expression).Max(s => (double)s.Element(ESTIMATED_VALUE));
         }
 
         public double GetMaxEnergy(DateTime dateTime)
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
+                .Where(x => (DateTime)x.Element(OBSERVATION_POINT) == dateTime).Max(s => (double)s.Element(ESTIMATED_VALUE));
         }
 
         public Coordinates GetMaxEnergyPosition()
         {
-            throw new NotImplementedException();
+            var s = _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).First(x => Math.Abs((double)x.Element(ESTIMATED_VALUE)
+                - _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Max(v => (double)v.Element(ESTIMATED_VALUE))) < 0.001);
+
+            return new Coordinates
+            {
+                X = (double)s.Element("X"),
+                Y = (double)s.Element("Y")
+            };
         }
 
         public DateTime GetMaxEnergyTime()
         {
-            throw new NotImplementedException();
+            return (DateTime)_xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).First(x => Math.Abs((double)x.Element(ESTIMATED_VALUE)
+                - _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Max(v => (double)v.Element(ESTIMATED_VALUE))) < 0.001);
         }
 
         public double GetMinEnergy()
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
+                       .Elements(ESTIMATED_VALUE).Min(x => double.Parse(x.Value));
         }
 
         public double GetMinEnergy(Coordinates coordinates)
-        {
-            throw new NotImplementedException();
+        {       
+            Func<XElement, bool> expression = item =>
+            {
+                var flashCoordinatis = new Coordinates
+                {
+                    X = (double)item.Element("X"),
+                    Y = (double)item.Element("Y")
+                };
+
+                return flashCoordinatis == coordinates;
+            };            
+
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
+                .Where(expression).Min(s => (double)s.Element(ESTIMATED_VALUE));
         }
 
         public double GetMinEnergy(DateTime dateTime)
         {
-            throw new NotImplementedException();
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
+                .Where(x => (DateTime)x.Element(OBSERVATION_POINT) == dateTime).Min(s => (double)s.Element(ESTIMATED_VALUE));
         }
 
         public Coordinates GetMinEnergyPosition()
         {
-            throw new NotImplementedException();
+            var s = _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).First(x => Math.Abs((double)x.Element(ESTIMATED_VALUE)
+                - _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Min(v => (double)v.Element(ESTIMATED_VALUE))) < 0.001);
+
+            return new Coordinates
+            {
+                X = (double)s.Element("X"),
+                Y = (double)s.Element("Y")
+            };
         }
 
         public DateTime GetMinEnergyTime()
         {
-            throw new NotImplementedException();
+            return (DateTime)_xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).First(x => Math.Abs((double)x.Element(ESTIMATED_VALUE)
+                - _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Min(v => (double)v.Element(ESTIMATED_VALUE))) < 0.001);
         }
     }
 }

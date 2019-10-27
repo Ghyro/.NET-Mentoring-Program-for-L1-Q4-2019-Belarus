@@ -4,19 +4,23 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using Potestas.Interfaces;
+using Potestas.Observations;
 
 namespace Potestas.Storages
 {
     public class XmlFileStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
         private readonly string _filePath;
-        private readonly List<T> _observation;
+        private List<FlashObservation> _observations;
+        private readonly XmlSerializer _xmlSerializer;
 
         public XmlFileStorage()
         {
+            _xmlSerializer = new XmlSerializer(typeof(List<FlashObservation>));
             _filePath = ConfigurationManager.AppSettings["xmlStoragePath"];
-            _observation = new List<T>();
+            _observations = new List<FlashObservation>();
             ReadFromFile();
         }
 
@@ -27,7 +31,7 @@ namespace Potestas.Storages
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _observation.GetEnumerator();
+            return _observations.GetEnumerator();
         }
 
         public void Add(T item)
@@ -35,13 +39,13 @@ namespace Potestas.Storages
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            _observation.Add(item);
+            _observations.Add((FlashObservation)(object)item);
             WriteToFile();
         }
 
         public void Clear()
         {
-            _observation.Clear();
+            _observations.Clear();
             ClearFile();
         }
 
@@ -50,20 +54,20 @@ namespace Potestas.Storages
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            return _observation.Contains(item);
+            return _observations.Contains((FlashObservation)(object)item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (arrayIndex > _observation.Count)
+            if (arrayIndex > _observations.Count)
             {
-                _observation.AddRange(array);
+                _observations.AddRange((FlashObservation[])(object)array);
             }
             else
             {
                 if (arrayIndex < 0)
                     arrayIndex = 0;
-                _observation.InsertRange(arrayIndex, array);
+                _observations.InsertRange(arrayIndex, (FlashObservation[])(object)array);
             }
 
             WriteToFile();
@@ -81,7 +85,7 @@ namespace Potestas.Storages
                 if (removeItem == null)
                     throw new ArgumentNullException(nameof(item));
 
-                _observation.Remove(removeItem);
+                _observations.Remove((FlashObservation)(object)removeItem);
 
                 WriteToFile();
 
@@ -93,7 +97,7 @@ namespace Potestas.Storages
             }
         }
 
-        public int Count => _observation.Count;
+        public int Count => _observations.Count;
 
         public bool IsReadOnly => false;
 
@@ -101,12 +105,12 @@ namespace Potestas.Storages
 
         public IEnumerable<T> GetAll()
         {
-            return _observation;
+            return (IEnumerable<T>)_observations;
         }
 
         public T GetByHash(int hashCode)
         {
-            return _observation.SingleOrDefault(item => item.GetHashCode() == hashCode);
+            return (T)(object)_observations.SingleOrDefault(item => item.GetHashCode() == hashCode);
         }
 
         #region private
@@ -115,20 +119,20 @@ namespace Potestas.Storages
         {
             if (!File.Exists(_filePath))
                 return;
+
             using (var stream = new FileStream(_filePath, FileMode.OpenOrCreate))
             {
                 if (stream.Length <= 0)
                     return;
 
-                var content = string.Empty;
-
                 using (var streamReader = new StreamReader(stream))
                 {
-                    content = streamReader.ReadToEnd();
-                }
+                    _observations.Clear();
 
-                _observation.Clear();
-                //_observation.AddRange(JsonConvert.DeserializeObject<List<T>>(content));
+                    var flashObservations = (List<FlashObservation>)_xmlSerializer.Deserialize(streamReader);
+
+                    _observations.AddRange(flashObservations);
+                }
             }
         }
 
@@ -137,11 +141,8 @@ namespace Potestas.Storages
             var fileMode = File.Exists(_filePath) ? FileMode.Truncate : FileMode.Create;
 
             using (var stream = new FileStream(_filePath, fileMode))
-            {
-                //var content = JsonConvert.SerializeObject(_observation);
-                //using (var streamWriter = new StreamWriter(stream))
-                //    streamWriter.Write(content);
-            }
+            using (var streamWriter = new StreamWriter(stream))
+                _xmlSerializer.Serialize(streamWriter, _observations);            
         }
 
         private void ClearFile()
