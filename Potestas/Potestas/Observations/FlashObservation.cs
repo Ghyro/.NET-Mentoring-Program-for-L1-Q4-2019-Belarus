@@ -23,12 +23,14 @@ namespace Potestas.Observations
     */
 
     [DataContract]
+    [Serializable]
     public struct FlashObservation : IEnergyObservation
     {
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
         private int _durationMs;
         private DateTime _observationTime;
+        private double _estimatedValue;
 
         public FlashObservation(DateTime observationTime) : this()
         {
@@ -82,6 +84,7 @@ namespace Potestas.Observations
                     return _intensity * _durationMs;
                 }
             }
+            set => _estimatedValue = value;
         }
 
         public override string ToString()
@@ -117,7 +120,9 @@ namespace Potestas.Observations
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+
             return obj is FlashObservation && Equals((FlashObservation)obj);
         }
 

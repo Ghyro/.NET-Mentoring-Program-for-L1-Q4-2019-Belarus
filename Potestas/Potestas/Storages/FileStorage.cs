@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -15,9 +16,9 @@ namespace Potestas.Storages
         private readonly string _filePath;
         private readonly List<T> _observation;
 
-        public FileStorage(string filePath)
+        public FileStorage()
         {
-            _filePath = filePath;
+            _filePath = ConfigurationManager.AppSettings["storagePath"];
             _observation = new List<T>();
             ReadFromFile();
         }
@@ -151,8 +152,9 @@ namespace Potestas.Storages
 
         private void ClearFile()
         {
-            if (File.Exists(_filePath))
-                using (var stream = new FileStream(_filePath, FileMode.Truncate)) { }
+            if (!File.Exists(_filePath))
+                return;
+            using (new FileStream(_filePath, FileMode.Truncate)) { }
         }
         #endregion
     }
