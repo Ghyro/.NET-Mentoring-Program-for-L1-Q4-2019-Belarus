@@ -29,6 +29,9 @@ namespace Potestas.Analizers
 
         public double GetAverageEnergy(DateTime startFrom, DateTime endBy)
         {
+            if (startFrom == null || endBy == null)
+                throw new ArgumentException($"{nameof(startFrom)}, {nameof(endBy)}");
+
             var resultObservations = _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
                                         .Where(x => (DateTime)x.Element(OBSERVATION_TIME) > startFrom
                                         && (DateTime)x.Element(OBSERVATION_TIME) < endBy)
@@ -38,6 +41,9 @@ namespace Potestas.Analizers
 
         public double GetAverageEnergy(Coordinates rectTopLeft, Coordinates rectBottomRight)
         {
+            if (rectTopLeft == null || rectBottomRight == null)
+                throw new ArgumentException($"{nameof(rectTopLeft)}, {nameof(rectBottomRight)}");
+
             var resultObservations = _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS)
                                         .Where(x => (double)x.Element(OBSERVATION_POINT).Element("X") > rectTopLeft.X
                                         && (double)x.Element(OBSERVATION_POINT).Element("Y") < rectBottomRight.X
@@ -78,6 +84,9 @@ namespace Potestas.Analizers
 
         public double GetMaxEnergy(Coordinates coordinates)
         {
+            if (coordinates == null)
+                throw new ArgumentException(nameof(coordinates));
+
             Func<XElement, bool> expression = item =>
             {
                 var flashCoordinatis = new Coordinates
@@ -95,6 +104,9 @@ namespace Potestas.Analizers
 
         public double GetMaxEnergy(DateTime dateTime)
         {
+            if (dateTime == null)
+                throw new ArgumentException(nameof(dateTime));
+
             return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
                 .Where(x => (DateTime)x.Element(OBSERVATION_POINT) == dateTime).Max(s => (double)s.Element(ESTIMATED_VALUE));
         }
@@ -124,7 +136,10 @@ namespace Potestas.Analizers
         }
 
         public double GetMinEnergy(Coordinates coordinates)
-        {       
+        {
+            if (coordinates == null)
+                throw new ArgumentException(nameof(coordinates));
+
             Func<XElement, bool> expression = item =>
             {
                 var flashCoordinatis = new Coordinates
@@ -142,6 +157,9 @@ namespace Potestas.Analizers
 
         public double GetMinEnergy(DateTime dateTime)
         {
+            if (dateTime == null)
+                throw new ArgumentException(nameof(dateTime));
+
             return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
                 .Where(x => (DateTime)x.Element(OBSERVATION_POINT) == dateTime).Min(s => (double)s.Element(ESTIMATED_VALUE));
         }
