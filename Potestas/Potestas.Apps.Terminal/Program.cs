@@ -23,6 +23,7 @@ namespace Potestas.Apps.Terminal
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
             _testRegistration.AttachProcessingGroup(new SaveToFileProcessorFactory());
+            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory());
             _testRegistration.Start().Wait();
         }
 
