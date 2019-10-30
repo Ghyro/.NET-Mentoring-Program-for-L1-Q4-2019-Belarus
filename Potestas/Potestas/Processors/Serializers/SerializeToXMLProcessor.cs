@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using Potestas.Interfaces;
@@ -32,21 +33,29 @@ namespace Potestas.Processors.Serializers
 
                 if (Stream.Length > 0)
                 {
-                    var items = (List<FlashObservation>)_xmlSerializerCollection.Deserialize(reader);
 
-                    if (items.Count >= 2)
+                    try
                     {
-                        items.Add(newObservation);
-                        Stream.SetLength(0);
-                        _xmlSerializerCollection.Serialize(writer, items);
+                        var items = (List<FlashObservation>)_xmlSerializerCollection.Deserialize(reader);
+
+                        if (items.Count >= 2)
+                        {
+                            items.Add(newObservation);
+                            Stream.SetLength(0);
+                            _xmlSerializerCollection.Serialize(writer, items);
+                        }
+                        else if (items.Count == 0)
+                        {
+                            items.Add(_firstItem);
+                            items.Add(newObservation);
+                            Stream.SetLength(0);
+                            _xmlSerializerCollection.Serialize(writer, items);
+                        }
                     }
-                    else if (items.Count == 0)
+                    catch(Exception ex)
                     {
-                        items.Add(_firstItem);
-                        items.Add(newObservation);
-                        Stream.SetLength(0);
-                        _xmlSerializerCollection.Serialize(writer, items);
-                    }                    
+                        base.OnError(ex);
+                    }                                     
                 }
                 else
                 {

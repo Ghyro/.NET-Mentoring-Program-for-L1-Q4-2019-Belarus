@@ -26,12 +26,14 @@ namespace Potestas.Processors.Serializers
 
         public void OnCompleted()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Serialize processing completed");
         }
 
         public void OnError(Exception error)
         {
-            throw new NotImplementedException();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(error);
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public virtual void OnNext(T value)
