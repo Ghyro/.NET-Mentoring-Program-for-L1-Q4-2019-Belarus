@@ -4,9 +4,9 @@
 
 2. .NET via C# (done)
 
-3. Basic XML (in progress)
+3. Basic XML (done)
 
-4. SQL
+4. SQL (in progress)
 
 5. ORM
 
