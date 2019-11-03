@@ -9,7 +9,7 @@ using Potestas.Observations;
 namespace Potestas.Tests.LINQ
 {
     [TestFixture]
-    public class LINQAnalizerTests
+    public class LINQAnalyzerTests
     {
         [Test]
         [TestCase(74.8)]
