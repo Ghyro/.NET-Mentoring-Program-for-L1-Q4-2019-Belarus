@@ -17,12 +17,12 @@ namespace Potestas.ConcreteFactories
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
-            return new SaveToSqlProcessor<IEnergyObservation>(ConfigurationManager.AppSettings["ADOConnection"]);
+            return new SaveToSqlProcessor<IEnergyObservation>();
         }
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
-            return _storage ?? (_storage = new SqlStorage<IEnergyObservation>(ConfigurationManager.AppSettings["ADOConnection"]));
+            return _storage ?? (_storage = new SqlStorage<IEnergyObservation>());
         }
     }
 }

@@ -6,14 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace Potestas.Tests.Serializer
 {
     [TestFixture]
     public class SaveToSqlProcessorTests
     {
-        private readonly string ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ObservationCenter;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private readonly string ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Observations;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         [Test]
         [TestCase(11.2, 14.0, 14.77, 1993)]
@@ -22,7 +21,7 @@ namespace Potestas.Tests.Serializer
         {
             // Arrange            
             var observations = new List<FlashObservation>();
-            var processor = new SaveToSqlProcessor<IEnergyObservation>(ConnectionString);
+            var processor = new SaveToSqlProcessor<IEnergyObservation>();
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
             var dataRowCount = 0;
 
@@ -30,11 +29,11 @@ namespace Potestas.Tests.Serializer
             processor.OnNext(observation);
 
             // Assert
-            var fetchExpression = "SELECT * FROM FlashObservation";
+            var fetch_query = "SELECT * FROM FlashObservations JOIN Coordinates ON FlashObservations.CoordinatesId = Coordinates.Id";
             using (var _connectionString = new SqlConnection(ConnectionString))
             {
                 _connectionString.Open();
-                var sqlAdapter = new SqlDataAdapter(fetchExpression, _connectionString);
+                var sqlAdapter = new SqlDataAdapter(fetch_query, _connectionString);
 
                 var dataSet = new DataSet();
                 sqlAdapter.Fill(dataSet);
@@ -49,12 +48,13 @@ namespace Potestas.Tests.Serializer
                         var coordinates = new Coordinates();
 
                         flashObservation.Id = Convert.ToInt32(row.ItemArray[0]);
-                        flashObservation.Intensity = Convert.ToDouble(row.ItemArray[1]);
-                        flashObservation.DurationMs = Convert.ToInt32(row.ItemArray[2]);
-                        flashObservation.ObservationTime = (DateTime)(row.ItemArray[3]);
-                        flashObservation.EstimatedValue = Convert.ToDouble(row.ItemArray[4]);
-                        coordinates.X = Convert.ToDouble(row.ItemArray[5]);
-                        coordinates.Y = Convert.ToDouble(row.ItemArray[6]);
+                        flashObservation.DurationMs = Convert.ToInt32(row.ItemArray[1]);
+                        flashObservation.Intensity = Convert.ToDouble(row.ItemArray[2]);
+                        flashObservation.EstimatedValue = Convert.ToDouble(row.ItemArray[3]);
+                        flashObservation.ObservationTime = (DateTime)row.ItemArray[4];
+                        flashObservation.CoordinatesId = Convert.ToInt32(row.ItemArray[5]);
+                        coordinates.X = Convert.ToDouble(row.ItemArray[7]);
+                        coordinates.Y = Convert.ToDouble(row.ItemArray[8]);
 
                         flashObservation.ObservationPoint = coordinates;
 

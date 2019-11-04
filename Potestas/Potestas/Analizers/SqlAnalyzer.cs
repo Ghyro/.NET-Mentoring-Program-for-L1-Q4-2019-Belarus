@@ -18,7 +18,7 @@ namespace Potestas.Analizers
 
         public double GetAverageEnergy()
         {
-            var query = @"SELECT AVG(EstimatedValue) FROM FlashObservation";
+            var query = @"SELECT AVG(EstimatedValue) FROM FlashObservations";
 
             var value = 0.0;
 
@@ -46,7 +46,7 @@ namespace Potestas.Analizers
 
         public double GetAverageEnergy(DateTime startFrom, DateTime endBy)
         {
-            var query = $"SELECT AVG(EstimatedValue) FROM FlashObservation WHERE ObservationTime > {startFrom} AND ObservationTime < {endBy}";
+            var query = $"SELECT AVG(EstimatedValue) FROM FlashObservations WHERE ObservationTime > {startFrom} AND ObservationTime < {endBy}";
 
             var value = 0.0;
 
@@ -74,7 +74,7 @@ namespace Potestas.Analizers
 
         public double GetAverageEnergy(Coordinates rectTopLeft, Coordinates rectBottomRight)
         {
-            var query = $"SELECT AVG(X), AVG(Y) FROM FlashObservation WHERE X > {rectTopLeft} AND ObservationTime < {rectBottomRight}" +
+            var query = $"SELECT AVG(X), AVG(Y) FROM FlashObservations WHERE X > {rectTopLeft} AND ObservationTime < {rectBottomRight}" +
                 $"AND Y < {rectTopLeft} AND Y > {rectBottomRight}";
 
             var value = 0.0;
@@ -121,7 +121,7 @@ namespace Potestas.Analizers
 
         public double GetMaxEnergy()
         {
-            var query = @"SELECT MAX(EstimatedValue) FROM FlashObservation";
+            var query = @"SELECT MAX(EstimatedValue) FROM FlashObservations";
 
             var value = 0.0;
 
@@ -149,7 +149,8 @@ namespace Potestas.Analizers
 
         public double GetMaxEnergy(Coordinates coordinates)
         {
-            var query = $"SELECT MAX(EstimatedValue) FROM FlashObservation WHERE X = {coordinates.X}";
+            var query = $"SELECT MAX(EstimatedValue) FROM FlashObservations as F JOIN Coordinates as C ON F.CoordinatesId = C.Id" +
+                $"WHERE C.X = {coordinates.X} AND C.Y = {coordinates.Y}";
 
             var value = 0.0;
 
@@ -177,7 +178,8 @@ namespace Potestas.Analizers
 
         public double GetMaxEnergy(DateTime dateTime)
         {
-            var query = $"SELECT MAX(EstimatedValue) FROM FlashObservation WHERE ObservationTime = {dateTime}";
+            var query = $"SELECT MAX(EstimatedValue) FROM FlashObservations as F JOIN Coordinates as C ON F.CoordinatesId = C.Id" +
+                $"WHERE F.ObservationTime = {dateTime.ToShortDateString()}";
 
             var value = 0.0;
 
@@ -205,8 +207,32 @@ namespace Potestas.Analizers
 
         public Coordinates GetMaxEnergyPosition()
         {
-            //
-            throw new NotImplementedException();
+            var query = $"SELECT TOP 1 FROM FlashObservations as F JOIN Coordinates as C ON F.CoordinatesId = C.Id" +
+                $"WHERE F.EstimatedValue - (SELECT MAX(EstimatedValue) FROM FlashObservations) < 0.001)";
+
+            var value = new Coordinates();
+
+            using (_sqlConnection)
+            {
+                _sqlConnection.Open();
+
+                var sqlAdapter = new SqlDataAdapter(query, _sqlConnection);
+
+                var dataSet = new DataSet();
+
+                sqlAdapter.Fill(dataSet);
+
+                foreach (DataTable dt in dataSet.Tables)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        value.X = Convert.ToDouble(row.ItemArray[1]);
+                        value.Y = Convert.ToDouble(row.ItemArray[2]);
+                    }
+                }
+            }
+
+            return value;
         }
 
         public DateTime GetMaxEnergyTime()
@@ -239,7 +265,7 @@ namespace Potestas.Analizers
 
         public double GetMinEnergy()
         {
-            var query = @"SELECT MIN(EstimatedValue) FROM FlashObservation";
+            var query = @"SELECT MIN(EstimatedValue) FROM FlashObservations";
 
             var value = 0.0;
 
@@ -267,7 +293,8 @@ namespace Potestas.Analizers
 
         public double GetMinEnergy(Coordinates coordinates)
         {
-            var query = $"SELECT MIN(EstimatedValue) FROM FlashObservation WHERE X = {coordinates.X}";
+            var query = $"SELECT MIN(EstimatedValue) FROM FlashObservations as F JOIN Coordinates as C ON F.CoordinatesId = C.Id" +
+                $"WHERE C.X = {coordinates.X} AND C.Y = {coordinates.Y}";
 
             var value = 0.0;
 
@@ -295,7 +322,8 @@ namespace Potestas.Analizers
 
         public double GetMinEnergy(DateTime dateTime)
         {
-            var query = $"SELECT MIN(EstimatedValue) FROM FlashObservation WHERE ObservationTime = {dateTime}";
+            var query = $"SELECT MIN(EstimatedValue) FROM FlashObservations as F JOIN Coordinates as C ON F.CoordinatesId = C.Id" +
+                $"WHERE F.ObservationTime = {dateTime.ToShortDateString()}";
 
             var value = 0.0;
 
@@ -323,13 +351,37 @@ namespace Potestas.Analizers
 
         public Coordinates GetMinEnergyPosition()
         {
-            //
-            throw new NotImplementedException();
+            var query = $"SELECT TOP 1 FROM FlashObservations as F JOIN Coordinates as C ON F.CoordinatesId = C.Id" +
+                 $"WHERE F.EstimatedValue - (SELECT MIN(EstimatedValue) FROM FlashObservations) < 0.001)";
+
+            var value = new Coordinates();
+
+            using (_sqlConnection)
+            {
+                _sqlConnection.Open();
+
+                var sqlAdapter = new SqlDataAdapter(query, _sqlConnection);
+
+                var dataSet = new DataSet();
+
+                sqlAdapter.Fill(dataSet);
+
+                foreach (DataTable dt in dataSet.Tables)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        value.X = Convert.ToDouble(row.ItemArray[1]);
+                        value.Y = Convert.ToDouble(row.ItemArray[2]);
+                    }
+                }
+            }
+
+            return value;
         }
 
         public DateTime GetMinEnergyTime()
         {
-            var query = $"SELECT TOP 1 EstimatedValue, MIN(ObservationTime) FROM FlashObservation group by EstimatedValue";
+            var query = $"SELECT TOP 1 EstimatedValue, MIN(ObservationTime) FROM FlashObservations GROUP BY EstimatedValue";
 
             var value = new DateTime();
 

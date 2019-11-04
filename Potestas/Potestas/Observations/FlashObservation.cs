@@ -27,6 +27,7 @@ namespace Potestas.Observations
     public struct FlashObservation : IEnergyObservation
     {
         public int Id { get; set; }
+        public int CoordinatesId { get; set; }
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
         private int _durationMs;

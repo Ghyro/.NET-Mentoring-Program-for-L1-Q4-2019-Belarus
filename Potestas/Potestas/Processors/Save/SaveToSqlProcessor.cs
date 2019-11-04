@@ -8,23 +8,16 @@ namespace Potestas.Processors.Save
 {
     public class SaveToSqlProcessor<T> : IEnergyObservationProcessor<T> where T : IEnergyObservation
     {
-        private SqlConnection _connectionString;
-
         public string Description => "SaveToSqlProcessor";
-
-        public SaveToSqlProcessor(string connectionString)
-        {
-            _connectionString = new SqlConnection(connectionString);
-        }
 
         public void OnCompleted()
         {
-            Unsubscribe();
+            Console.WriteLine("SaveToSqlProcessor has completed");
         }
 
         public void OnError(Exception error)
         {
-            _connectionString.Close();
+            Console.WriteLine(error.Message);
         }
 
         public void OnNext(T value)
@@ -39,31 +32,34 @@ namespace Potestas.Processors.Save
 
             try
             {
-                var insertExpession = $"INSERT INTO FlashObservation (Intensity, DurationMs, ObservationTime, EstimatedValue, X, Y) VALUES" +
-                    $"(${flash.Intensity}," +
-                    $"${flash.DurationMs}," +
-                    $"${flash.ObservationTime.ToShortDateString()}," +
-                    $"${flash.EstimatedValue}," +
-                    $"${flash.ObservationPoint.X.ToString()}," +
-                    $"${flash.ObservationPoint.Y.ToString()})";
+                using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
+                {
+                    var coordinates_query = $"INSERT INTO Coordinates (X, Y) VALUES ({flash.ObservationPoint.X}, {flash.ObservationPoint.Y})";
 
-                var command = new SqlCommand(insertExpession, _connectionString);
+                    var flash_query = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
+                        $" VALUES" +
+                        $" ({flash.DurationMs}," +
+                        $" {flash.Intensity}," +
+                        $" {flash.EstimatedValue}," +
+                        $" {flash.ObservationTime.ToShortDateString()}," +
+                        $" (SELECT Id FROM Coordinates WHERE X = {flash.ObservationPoint.X} AND Y = {flash.ObservationPoint.Y}))";
 
-                _connectionString.Open();
+                    var command_coordinates = new SqlCommand(coordinates_query, sqlConnection);
+                    var command_flash = new SqlCommand(flash_query, sqlConnection);
 
-                command.ExecuteNonQuery();
+                    sqlConnection.Open();
 
-                OnCompleted();
+                    command_coordinates.ExecuteNonQuery();
+                    command_flash.ExecuteNonQuery();
+
+                    OnCompleted();
+                }
+                
             }
             catch(Exception ex)
             {
                 OnError(ex);
             }           
-        }
-
-        public virtual void Unsubscribe()
-        {
-            _connectionString.Close();
         }
     }
 }
