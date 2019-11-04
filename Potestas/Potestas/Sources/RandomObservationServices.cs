@@ -22,8 +22,8 @@ namespace Potestas.Sources
                     X = random.Next(-90, 90),
                     Y = random.Next(0, 180)
                 },
-                Intensity = random.Next(0, 2000000000),
-                DurationMs = random.Next(0, int.MaxValue),
+                Intensity = random.Next(0, 100),
+                DurationMs = random.Next(0, 100),
                 ObservationTime = new DateTime(
                 random.Next(2000, 2019),
                 int.Parse(DateTime.Now.Month.ToString("d2")),

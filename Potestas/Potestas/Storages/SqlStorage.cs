@@ -12,13 +12,11 @@ namespace Potestas.Storages
 {
     public class SqlStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
-        private SqlConnection _connectionString;
         private List<FlashObservation> _observations;
 
-        public SqlStorage(string connectionString)
+        public SqlStorage()
         {
             _observations = new List<FlashObservation>();
-            _connectionString = new SqlConnection(connectionString);
             FetchFromDatabaseTable();
         }
         public IEnumerator<T> GetEnumerator()
@@ -114,71 +112,86 @@ namespace Potestas.Storages
 
         private void FetchFromDatabaseTable()
         {
-            var fetchExpression = "SELECT * FROM FlashObservation";            
+            var fetch_query = "SELECT * FROM FlashObservations JOIN Coordinates ON FlashObservations.CoordinatesId = Coordinates.Id";           
 
-            using (_connectionString)
+            try
             {
-                _connectionString.Open();
-                var sqlAdapter = new SqlDataAdapter(fetchExpression, _connectionString);
-
-                var dataSet = new DataSet();
-                sqlAdapter.Fill(dataSet);
-
-                foreach (DataTable dt in dataSet.Tables)
+                using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
                 {
-                    foreach (DataRow row in dt.Rows)
+                    sqlConnection.Open();
+                    var sqlAdapter = new SqlDataAdapter(fetch_query, sqlConnection);
+
+                    var dataSet = new DataSet();
+                    sqlAdapter.Fill(dataSet);
+
+                    foreach (DataTable dt in dataSet.Tables)
                     {
-                        var flashObservation = new FlashObservation();
-                        var coordinates = new Coordinates();
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            var flashObservation = new FlashObservation();
+                            var coordinates = new Coordinates();
 
-                        flashObservation.Id = int.Parse(row.ItemArray[0].ToString());
-                        flashObservation.Intensity = Convert.ToDouble(row.ItemArray[1]);
-                        flashObservation.DurationMs = Convert.ToInt32(row.ItemArray[2]);
-                        flashObservation.ObservationTime = (DateTime)(row.ItemArray[3]);
-                        flashObservation.EstimatedValue = Convert.ToDouble(row.ItemArray[4]);
-                        coordinates.X = Convert.ToDouble(row.ItemArray[5]);
-                        coordinates.Y = Convert.ToDouble(row.ItemArray[6]);
+                            flashObservation.Id = Convert.ToInt32(row.ItemArray[0]);
+                            flashObservation.DurationMs = Convert.ToInt32(row.ItemArray[1]);
+                            flashObservation.Intensity = Convert.ToDouble(row.ItemArray[2]);
+                            flashObservation.EstimatedValue = Convert.ToDouble(row.ItemArray[3]);
+                            flashObservation.ObservationTime = (DateTime)row.ItemArray[4];
+                            flashObservation.CoordinatesId = Convert.ToInt32(row.ItemArray[5]);
+                            coordinates.X = Convert.ToDouble(row.ItemArray[7]);
+                            coordinates.Y = Convert.ToDouble(row.ItemArray[8]);
 
-                        flashObservation.ObservationPoint = coordinates;
+                            flashObservation.ObservationPoint = coordinates;
 
-                        _observations.Add(flashObservation);
+                            _observations.Add(flashObservation);
+                        }
                     }
                 }
+                
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }               
         }
 
         private void InsertToDatabaseTable()
         {
-            using (_connectionString)
+            using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
             {
-                foreach(var flash in _observations)
+                sqlConnection.Open();
+
+                foreach (var flash in _observations)
                 {
-                    var insertExpession = $"INSERT INTO FlashObservation (Intensity, DurationMs, ObservationTime, EstimatedValue, X, Y) VALUES" +
-                    $"(${flash.Intensity.ToString()}," +
-                    $"${flash.DurationMs.ToString()}," +
-                    $"${flash.ObservationTime.ToShortDateString()}," +
-                    $"${flash.EstimatedValue.ToString()}," +
-                    $"${flash.ObservationPoint.X.ToString()}," +
-                    $"${flash.ObservationPoint.Y.ToString()})";
+                    var coordinates_query = $"INSERT INTO Coordinates (X, Y) VALUES ({flash.ObservationPoint.X}, {flash.ObservationPoint.Y})";
 
-                    var command = new SqlCommand(insertExpession, _connectionString);
+                    var flash_query = $"INSERT INTO FlashObservations (Intensity, DurationMs, ObservationTime, EstimatedValue, CoordinatesId)" +
+                        $" VALUES" +
+                        $" ({flash.DurationMs}," +
+                        $" {flash.Intensity}," +
+                        $" {flash.EstimatedValue}," +
+                        $" {flash.ObservationTime.ToShortDateString()}," +
+                        $" (SELECT Id FROM Coordinates WHERE X = {flash.ObservationPoint.X} AND Y = {flash.ObservationPoint.Y}))";
 
-                    _connectionString.Open();
+                    var command_coordinates = new SqlCommand(coordinates_query, sqlConnection);
+                    var command_flash = new SqlCommand(flash_query, sqlConnection);
 
-                    command.ExecuteNonQuery();
+                    sqlConnection.Open();
+
+                    command_coordinates.ExecuteNonQuery();
+                    command_flash.ExecuteNonQuery();
                 }                
             }
         }
 
         private void ClearDatabaseTable()
         {
-            var deleteExpression = "DELETE FROM FlashObservation";
+            var delete_query = "DELETE FROM FlashObservation";
 
-            using (_connectionString)
+            using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
             {
-                var command = new SqlCommand(deleteExpression, _connectionString);
+                sqlConnection.Open();
 
-                _connectionString.Open();
+                var command = new SqlCommand(delete_query, sqlConnection);                
 
                 command.ExecuteNonQuery();
             }
