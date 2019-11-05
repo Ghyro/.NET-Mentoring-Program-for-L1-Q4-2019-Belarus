@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Text;
 using Potestas.Interfaces;
 using Potestas.Processors.Serializers;
 
@@ -24,14 +23,14 @@ namespace Potestas.Processors.Save
 
         public string FilePath
         {
-            get => _filePath ?? ConfigurationManager.AppSettings.Get("processorPath");
+            get => _filePath ?? ConfigurationManager.AppSettings["xmlProcessorPath"];
             set => _filePath = value;
         }
 
-        public SaveToFileProcessor(SerializeProcessor<IEnergyObservation> serializeProcessor, string path)
+        public SaveToFileProcessor(SerializeProcessor<IEnergyObservation> serializeProcessor)
         {
             _serializeProcessor = serializeProcessor;
-            FilePath = path;
+            FilePath = ConfigurationManager.AppSettings["xmlProcessorPath"];
         }    
 
         public void OnCompleted()

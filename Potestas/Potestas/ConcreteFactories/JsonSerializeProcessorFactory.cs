@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Potestas.Analizers;
+﻿using Potestas.Analizers;
 using Potestas.Interfaces;
 using Potestas.Processors.Serializers;
 using Potestas.Storages;
@@ -8,7 +7,7 @@ namespace Potestas.ConcreteFactories
 {
     public class JsonSerializeProcessorFactory : IProcessingFactory
     {
-        private IEnergyObservationStorage<IEnergyObservation> _storage = null;
+        private IEnergyObservationStorage<IEnergyObservation> _storage;
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
@@ -17,14 +16,12 @@ namespace Potestas.ConcreteFactories
 
         public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
         {
-            return new LINQAnalizer<IEnergyObservation>(CreateStorage());
+            return new LINQAnalyzer<IEnergyObservation>(CreateStorage());
         }
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
-            if (_storage == null)
-                _storage = new FileStorage<IEnergyObservation>(ConfigurationManager.AppSettings.Get("storagePath"));
-            return _storage;
+            return _storage ?? (_storage = new FileStorage<IEnergyObservation>());
         }
     }
 }

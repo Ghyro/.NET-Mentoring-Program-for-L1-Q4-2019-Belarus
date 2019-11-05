@@ -22,7 +22,8 @@ namespace Potestas.Apps.Terminal
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new SaveToFileProcessorFactory());
+            _testRegistration.AttachProcessingGroup(new SaveToSqlProcessorFactory());
+            _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory());
             _testRegistration.Start().Wait();
         }
 
@@ -53,7 +54,7 @@ namespace Potestas.Apps.Terminal
 
         public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
         {
-            return new LINQAnalizer<IEnergyObservation>(CreateStorage());
+            return new LINQAnalyzer<IEnergyObservation>(CreateStorage());
         }
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()

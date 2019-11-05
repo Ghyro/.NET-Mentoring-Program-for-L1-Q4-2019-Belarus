@@ -15,6 +15,7 @@ namespace Potestas
      */
 
     [DataContract]
+    [Serializable]
     public struct Coordinates
     {
         private double _x;

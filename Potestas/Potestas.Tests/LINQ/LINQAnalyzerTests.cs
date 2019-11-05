@@ -9,14 +9,14 @@ using Potestas.Observations;
 namespace Potestas.Tests.LINQ
 {
     [TestFixture]
-    public class LINQAnalizerTests
+    public class LINQAnalyzerTests
     {
         [Test]
         [TestCase(74.8)]
         public void GetAverageEnergyTest_ReturnAverageEnergy(double expectedResult)
         {
             // Arange
-            var linqAnalizer = new LINQAnalizer<IEnergyObservation>(MockStorage().Object);
+            var linqAnalizer = new LINQAnalyzer<IEnergyObservation>(MockStorage().Object);
 
             // Act
             var result = linqAnalizer.GetAverageEnergy();
@@ -30,7 +30,7 @@ namespace Potestas.Tests.LINQ
         public void GetMaxEnergyTest_ReturnAverageEnergy(double expectedResult)
         {
             // Arange
-            var linqAnalizer = new LINQAnalizer<IEnergyObservation>(MockStorage().Object);
+            var linqAnalizer = new LINQAnalyzer<IEnergyObservation>(MockStorage().Object);
 
             // Act
             var result = linqAnalizer.GetMaxEnergy();
@@ -48,7 +48,7 @@ namespace Potestas.Tests.LINQ
         {
             // Arange
             var dateObservation = new DateTime(yearStart, monthStart, dayStart);
-            var linqAnalizer = new LINQAnalizer<IEnergyObservation>(MockStorage().Object);
+            var linqAnalizer = new LINQAnalyzer<IEnergyObservation>(MockStorage().Object);
 
             // Act
             var result = linqAnalizer.GetMaxEnergy(dateObservation);

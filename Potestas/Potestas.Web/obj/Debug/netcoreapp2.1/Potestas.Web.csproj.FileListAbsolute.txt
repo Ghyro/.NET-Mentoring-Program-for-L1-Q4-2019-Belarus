@@ -7,7 +7,6 @@ D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potesta
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.Web.Views.pdb
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.dll
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.pdb
-D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\bin\Debug\netcoreapp2.1\Potestas.dll.config
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csprojAssemblyReference.cache
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.csproj.CoreCompileInputs.cache
 D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.Web\obj\Debug\netcoreapp2.1\Potestas.Web.RazorAssemblyInfo.cache

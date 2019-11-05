@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Potestas.Analizers;
+﻿using Potestas.Analizers;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;
 using Potestas.Storages;
@@ -8,11 +7,11 @@ namespace Potestas.ConcreteFactories
 {
     public class SaveToStorageProcessorFactory : IProcessingFactory
     {
-        private IEnergyObservationStorage<IEnergyObservation> _storage = null;
+        private IEnergyObservationStorage<IEnergyObservation> _storage;
 
         public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
         {
-            return new LINQAnalizer<IEnergyObservation>(CreateStorage());
+            return new LINQAnalyzer<IEnergyObservation>(CreateStorage());
         }
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
@@ -22,9 +21,7 @@ namespace Potestas.ConcreteFactories
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
-            if (_storage == null)
-                _storage = new FileStorage<IEnergyObservation>(ConfigurationManager.AppSettings.Get("processorPath"));
-            return _storage;
+            return _storage ?? (_storage = new FileStorage<IEnergyObservation>());
         }
     }
 }

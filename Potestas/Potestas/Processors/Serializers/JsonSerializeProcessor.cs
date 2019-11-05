@@ -18,28 +18,29 @@ namespace Potestas.Processors.Serializers
             using (var reader = new StreamReader(Stream))
             using (var writer = new StreamWriter(Stream))
             {
-                string jsonContent;
+                string content = string.Empty;
+
+                var settings = new JsonSerializerSettings
+                {
+                    Converters = {
+                        new AbstractConverter<FlashObservation, IEnergyObservation>()
+                    }
+                };
+
                 if (Stream.Length > 0)
                 {
-                    jsonContent = ReadAllStream(reader).Result;
+                    content = ReadAllStream(reader).Result;
 
                     List<T> items;
 
-                    var settings = new JsonSerializerSettings
+                    if (content[0] == '[')
                     {
-                        Converters = {
-                            new AbstractConverter<FlashObservation, IEnergyObservation>()
-                        }
-                    };
-
-                    if (jsonContent[0] == '[')
-                    {
-                        items = JsonConvert.DeserializeObject<List<T>>(jsonContent, settings);
+                        items = JsonConvert.DeserializeObject<List<T>>(content, settings);
                         items.Add(value);
                     }
                     else
                     {
-                        var item = JsonConvert.DeserializeObject<T>(jsonContent, settings);
+                        var item = JsonConvert.DeserializeObject<T>(content, settings);
                         items = new List<T>
                         {
                             item,
@@ -47,14 +48,14 @@ namespace Potestas.Processors.Serializers
                         };
                     }
 
-                    jsonContent = JsonConvert.SerializeObject(items, Formatting.Indented);
+                    content = JsonConvert.SerializeObject(items, Formatting.Indented);
                 }
                 else
                 {
-                    jsonContent = JsonConvert.SerializeObject(value, Formatting.Indented);
+                    content = JsonConvert.SerializeObject(value, Formatting.Indented);
                 }
 
-                WriteToStream(writer, jsonContent).Wait();
+                WriteToStream(writer, content).Wait();
             }
         }
 

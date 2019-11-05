@@ -2,13 +2,13 @@
 
 1. Introduction to program (done)
 
-2. .NET via C#
+2. .NET via C# (done)
 
-3. Basic XML
+3. Basic XML (done)
 
-4. SQL
+4. SQL (done)
 
-5. ORM
+5. ORM (in progress)
 
 6. NoSQL
 
