@@ -26,13 +26,13 @@ namespace Potestas.Observations
     [Serializable]
     public struct FlashObservation : IEnergyObservation
     {
-        public int Id { get; set; }
-        public int CoordinatesId { get; set; }
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
         private int _durationMs;
         private DateTime _observationTime;
         private double _estimatedValue;
+        private int _id;
+        private int _coordinatesId;
 
         public FlashObservation(DateTime observationTime) : this()
         {
@@ -45,6 +45,30 @@ namespace Potestas.Observations
             Intensity = intensity;
             ObservationPoint = observationPoint;
             ObservationTime = observationTime;
+        }
+
+        [DataMember]
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentNullException(nameof(value));
+                _id = value;
+            }
+        }
+
+        [DataMember]
+        public int CoordinatesId
+        {
+            get => _coordinatesId;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentNullException(nameof(value));
+                _coordinatesId = value;
+            }
         }
 
         [DataMember]
@@ -125,7 +149,7 @@ namespace Potestas.Observations
             if (ReferenceEquals(null, obj))
                 return false;
 
-            return obj is FlashObservation && Equals((FlashObservation)obj);
+            return obj is FlashObservation observation && Equals(observation);
         }
 
         public override int GetHashCode()
