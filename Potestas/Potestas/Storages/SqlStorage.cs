@@ -193,7 +193,7 @@ namespace Potestas.Storages
                 sqlConnection.Open();
 
                 var command_1 = new SqlCommand(deleteFlash_query, sqlConnection);       
-                var command_1 = new SqlCommand(deleteCoordinates_query, sqlConnection); 
+                var command_2 = new SqlCommand(deleteCoordinates_query, sqlConnection); 
 
                 command_1.ExecuteNonQuery();
                 command_2.ExecuteNonQuery();
