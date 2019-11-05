@@ -53,6 +53,7 @@ namespace Potestas.Tests.Serializer
                         flashObservation.EstimatedValue = Convert.ToDouble(row.ItemArray[3]);
                         flashObservation.ObservationTime = (DateTime)row.ItemArray[4];
                         flashObservation.CoordinatesId = Convert.ToInt32(row.ItemArray[5]);
+                        coordinates.Id = Convert.ToInt32(row.ItemArray[6]);
                         coordinates.X = Convert.ToDouble(row.ItemArray[7]);
                         coordinates.Y = Convert.ToDouble(row.ItemArray[8]);
 
