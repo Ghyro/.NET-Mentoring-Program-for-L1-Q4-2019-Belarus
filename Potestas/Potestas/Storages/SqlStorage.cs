@@ -137,6 +137,7 @@ namespace Potestas.Storages
                             flashObservation.EstimatedValue = Convert.ToDouble(row.ItemArray[3]);
                             flashObservation.ObservationTime = (DateTime)row.ItemArray[4];
                             flashObservation.CoordinatesId = Convert.ToInt32(row.ItemArray[5]);
+                            coordinates.Id = Convert.ToInt32(row.ItemArray[6]);
                             coordinates.X = Convert.ToDouble(row.ItemArray[7]);
                             coordinates.Y = Convert.ToDouble(row.ItemArray[8]);
 
@@ -185,15 +186,18 @@ namespace Potestas.Storages
 
         private void ClearDatabaseTable()
         {
-            var delete_query = "DELETE FROM FlashObservation";
+            var deleteCoordinates_query = "DELETE FROM Coordinates";
+            var deleteFlash_query = "DELETE FROM FlashObservations";
 
             using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
             {
                 sqlConnection.Open();
 
-                var command = new SqlCommand(delete_query, sqlConnection);                
+                var command_1 = new SqlCommand(deleteFlash_query, sqlConnection);       
+                var command_2 = new SqlCommand(deleteCoordinates_query, sqlConnection); 
 
-                command.ExecuteNonQuery();
+                command_1.ExecuteNonQuery();
+                command_2.ExecuteNonQuery();
             }
         }
 

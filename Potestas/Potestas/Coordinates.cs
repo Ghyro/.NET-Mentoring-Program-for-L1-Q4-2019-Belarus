@@ -18,6 +18,7 @@ namespace Potestas
     [Serializable]
     public struct Coordinates
     {
+        private int _id;
         private double _x;
         private double _y;
 
@@ -25,6 +26,18 @@ namespace Potestas
         {
             X = x;
             Y = y; 
+        }
+
+        [DataMember]
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentNullException(nameof(value));
+                _id = value;
+            }
         }
 
         [DataMember]
