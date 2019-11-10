@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Potestas.Observations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace Potestas
@@ -16,29 +20,22 @@ namespace Potestas
 
     [DataContract]
     [Serializable]
-    public struct Coordinates
+    public class Coordinates
     {
-        private int _id;
+        [DataMember]
+        [Key]
+        public int Id { get; set; }
+        public List<FlashObservation> FlashObservations { get; set; }
         private double _x;
         private double _y;
 
-        public Coordinates(double x, double y) : this()
+        public Coordinates() { }
+
+        public Coordinates(double x, double y)
         {
             X = x;
             Y = y; 
-        }
-
-        [DataMember]
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentNullException(nameof(value));
-                _id = value;
-            }
-        }
+        }        
 
         [DataMember]
         public double X
