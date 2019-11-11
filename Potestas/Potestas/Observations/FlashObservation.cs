@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Potestas.Interfaces;
 
@@ -24,7 +25,7 @@ namespace Potestas.Observations
 
     [DataContract]
     [Serializable]
-    public struct FlashObservation : IEnergyObservation
+    public class FlashObservation : IEnergyObservation
     {
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
@@ -34,12 +35,14 @@ namespace Potestas.Observations
         private int _id;
         private int _coordinatesId;
 
-        public FlashObservation(DateTime observationTime) : this()
+        public FlashObservation() { }
+
+        public FlashObservation(DateTime observationTime)
         {
             ObservationTime = observationTime;
         }
 
-        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime) : this()
+        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime)
         {
             DurationMs = durationMs;
             Intensity = intensity;
@@ -48,16 +51,8 @@ namespace Potestas.Observations
         }
 
         [DataMember]
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentNullException(nameof(value));
-                _id = value;
-            }
-        }
+        [Key]
+        public int Id { get; set; }
 
         [DataMember]
         public int CoordinatesId
