@@ -38,7 +38,11 @@ namespace Potestas.Analizers
 
         public IDictionary<Coordinates, int> GetDistributionByCoordinates()
         {
-            return _dbContext.FlashObservations.GroupBy(x => x.ObservationPoint).ToDictionary(y => y.Key, s => s.Count());
+            var result = from f in _dbContext.FlashObservations
+                         join c in _dbContext.Coordinates on f.CoordinatesId equals c.Id
+                         group f by f.ObservationPoint;
+
+            return result.ToDictionary(x => x.Key, s => s.Count());
         }
 
         public IDictionary<double, int> GetDistributionByEnergyValue()

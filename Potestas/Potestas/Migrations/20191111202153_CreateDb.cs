@@ -28,11 +28,11 @@ namespace Potestas.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CoordinatesId = table.Column<int>(nullable: false),
-                    Intensity = table.Column<double>(nullable: false),
                     DurationMs = table.Column<int>(nullable: false),
+                    Intensity = table.Column<double>(nullable: false),
+                    EstimatedValue = table.Column<double>(nullable: false),
                     ObservationTime = table.Column<DateTime>(nullable: false),
-                    EstimatedValue = table.Column<double>(nullable: false)
+                    CoordinatesId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
