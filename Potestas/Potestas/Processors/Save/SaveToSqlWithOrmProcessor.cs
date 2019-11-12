@@ -32,10 +32,11 @@ namespace Potestas.Processors.Save
             if (ReferenceEquals(value, null))
                 throw new ArgumentNullException(nameof(T));
 
-            var item = new FlashObservation();
+            var item = value as FlashObservation;
 
-            if (value is FlashObservation)
-                item = (FlashObservation)(object)value;
+            if (ReferenceEquals(item, null))
+                throw new ArgumentNullException(nameof(item));
+
             try
             {
                 AddCoordinatesToDatabase(item.ObservationPoint);
