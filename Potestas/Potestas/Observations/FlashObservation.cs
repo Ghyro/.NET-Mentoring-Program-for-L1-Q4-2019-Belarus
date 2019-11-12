@@ -55,19 +55,11 @@ namespace Potestas.Observations
         public int Id { get; set; }
 
         [DataMember]
-        public int CoordinatesId
+        public int DurationMs
         {
-            get => _coordinatesId;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentNullException(nameof(value));
-                _coordinatesId = value;
-            }
+            get => _durationMs;
+            set => _durationMs = value;
         }
-
-        [DataMember]
-        public Coordinates ObservationPoint { get; set; }
 
         [DataMember]
         public double Intensity
@@ -79,20 +71,6 @@ namespace Potestas.Observations
                     throw new ArgumentOutOfRangeException(nameof(value));
                 _intensity = value;
             }
-        }
-
-        [DataMember]
-        public int DurationMs
-        {
-            get => _durationMs;
-            set => _durationMs = value;
-        }
-
-        [DataMember]
-        public DateTime ObservationTime
-        {
-            get => _observationTime;
-            set => _observationTime = value;
         }
 
         [DataMember]
@@ -108,6 +86,28 @@ namespace Potestas.Observations
             set => _estimatedValue = value;
         }
 
+        [DataMember]
+        public DateTime ObservationTime
+        {
+            get => _observationTime;
+            set => _observationTime = value;
+        }
+
+        [DataMember]
+        public int CoordinatesId
+        {
+            get => _coordinatesId;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentNullException(nameof(value));
+                _coordinatesId = value;
+            }
+        }
+
+        [DataMember]
+        public Coordinates ObservationPoint { get; set; }    
+       
         public override string ToString()
         {
             return

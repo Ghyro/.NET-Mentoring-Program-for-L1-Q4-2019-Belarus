@@ -10,7 +10,7 @@ using Potestas.Context;
 namespace Potestas.Migrations
 {
     [DbContext(typeof(ObservationContext))]
-    [Migration("20191110155707_CreateDb")]
+    [Migration("20191111202153_CreateDb")]
     partial class CreateDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

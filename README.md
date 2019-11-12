@@ -8,9 +8,9 @@
 
 4. SQL (done)
 
-5. ORM (in progress)
+5. ORM (done)
 
-6. NoSQL
+6. NoSQL (in progress)
 
 7. Web programming
 

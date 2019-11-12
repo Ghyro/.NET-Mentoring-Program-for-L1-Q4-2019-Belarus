@@ -17,6 +17,7 @@ namespace Potestas.Processors.Save
 
         public void OnError(Exception error)
         {
+            Console.WriteLine();
             Console.WriteLine(error.Message);
         }
 
