@@ -117,22 +117,11 @@ namespace Potestas.Storages
             try
             {
                 using (_dbContext)
-                {        
-                    var items = _dbContext.FlashObservations.ToList();
+                {
+                    var items = _dbContext.FlashObservations.Include(x => x.ObservationPoint).ToList();
 
-                    foreach(var item in items)
-                    {
-                        var flashObservation = new FlashObservation();
-
-                        var coordinates = _dbContext.Coordinates.FirstOrDefault(x => x.Id == item.Id);
-
-                        if (coordinates == null)
-                            continue;
-
-                        flashObservation.ObservationPoint = coordinates;
-
-                        _observations.Add(flashObservation);
-                    }           
+                    foreach(var item in items)                    
+                        _observations.Add(item);                                                 
                 }
             }
             catch (Exception ex)
@@ -164,6 +153,7 @@ namespace Potestas.Storages
             {
                 _dbContext.Database.ExecuteSqlCommand(@"DELETE FROM Coordinates");
                 _dbContext.Database.ExecuteSqlCommand(@"DELETE FROM FlashObservations");
+                _dbContext.SaveChanges();
             }
         }
 
