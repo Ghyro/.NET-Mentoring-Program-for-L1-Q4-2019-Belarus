@@ -186,8 +186,8 @@ namespace Potestas.Storages
 
         private void ClearDatabaseTable()
         {
-            var deleteCoordinates_query = "DELETE FROM Coordinates";
             var deleteFlash_query = "DELETE FROM FlashObservations";
+            var deleteCoordinates_query = "DELETE FROM Coordinates";           
 
             using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
             {
