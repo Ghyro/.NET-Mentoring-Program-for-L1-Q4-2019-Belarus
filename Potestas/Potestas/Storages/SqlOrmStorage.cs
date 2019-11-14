@@ -2,6 +2,7 @@
 using Potestas.Context;
 using Potestas.Interfaces;
 using Potestas.Observations;
+using Potestas.Observations.Wrappers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,13 +13,13 @@ namespace Potestas.Storages
 {
     public class SqlOrmStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
-        private List<FlashObservation> _observations;
+        private List<FlashObservationWrapper> _observations;
         private ObservationContext _dbContext;
 
         public SqlOrmStorage(ObservationContext context)
         {
             _dbContext = context;
-            _observations = new List<FlashObservation>();
+            _observations = new List<FlashObservationWrapper>();
             FetchFromDatabaseTable();
         }
         public IEnumerator<T> GetEnumerator()
@@ -36,7 +37,7 @@ namespace Potestas.Storages
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            _observations.Add((FlashObservation)(object)item);
+            _observations.Add(new FlashObservationWrapper((FlashObservation)(object)item));
             InsertToDatabaseTable();
         }
 
@@ -51,20 +52,25 @@ namespace Potestas.Storages
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            return _observations.Contains((FlashObservation)(object)item);
+            return _observations.Contains(new FlashObservationWrapper((FlashObservation)(object)item));
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
             if (arrayIndex > _observations.Count)
             {
-                _observations.AddRange((FlashObservation[])(object)array);
+                var wrappArray = CreateFlashObservationWrapperArray(array);
+
+                _observations.AddRange(wrappArray);
             }
             else
             {
                 if (arrayIndex < 0)
                     arrayIndex = 0;
-                _observations.InsertRange(arrayIndex, (FlashObservation[])(object)array);
+
+                var wrappArray = CreateFlashObservationWrapperArray(array);
+
+                _observations.InsertRange(arrayIndex, wrappArray);
             }
 
             InsertToDatabaseTable();
@@ -82,7 +88,7 @@ namespace Potestas.Storages
                 if (removeItem == null)
                     throw new ArgumentNullException(nameof(item));
 
-                _observations.Remove((FlashObservation)(object)removeItem);
+                _observations.Remove(new FlashObservationWrapper((FlashObservation)(object)removeItem));
 
                 InsertToDatabaseTable();
 
@@ -118,7 +124,7 @@ namespace Potestas.Storages
             {
                 using (_dbContext)
                 {
-                    var items = _dbContext.FlashObservations.Include(x => x.ObservationPoint).ToList();
+                    var items = _dbContext.FlashObservationWrapper.Include(x => x.ObservationPoint).ToList();
 
                     foreach(var item in items)                    
                         _observations.Add(item);                                                 
@@ -135,12 +141,16 @@ namespace Potestas.Storages
             using (_dbContext)
             {
                 foreach (var flash in _observations)
-                {                    
-                    AddCoordinatesToDatabase(flash.ObservationPoint);
+                {
+                    var coordinatesWrapper = new CoordinatesWrapper(flash.ObservationPoint);
 
-                    var coordinatesFromDb = GetLastFromDatabase(flash.ObservationPoint).Result;
+                    AddCoordinatesToDatabase(coordinatesWrapper);
 
-                    flash.CoordinatesId = coordinatesFromDb.Id;
+                    var coordinatesFromDb = GetLastFromDatabase(coordinatesWrapper).Result;
+
+                    var coordinatesId = flash.CoordinatesId;
+
+                    coordinatesId = coordinatesFromDb.Id;
 
                     AddObservationToDatabase(flash);
                 }
@@ -157,28 +167,40 @@ namespace Potestas.Storages
             }
         }
 
-        private void AddCoordinatesToDatabase(Coordinates coordinates)
+        private void AddCoordinatesToDatabase(CoordinatesWrapper coordinates)
         {
-            _dbContext.Coordinates.Add(coordinates);
+            _dbContext.CoordinatesWrapper.Add(coordinates);
 
             _dbContext.SaveChanges();
         }
 
-        private void AddObservationToDatabase(FlashObservation flashObservation)
+        private void AddObservationToDatabase(FlashObservationWrapper flashObservation)
         {
-            _dbContext.FlashObservations.Add(flashObservation);
+            _dbContext.FlashObservationWrapper.Add(flashObservation);
 
             _dbContext.SaveChanges();
         }
 
-        private async Task<Coordinates> GetLastFromDatabase(Coordinates coordinates)
+        private async Task<CoordinatesWrapper> GetLastFromDatabase(CoordinatesWrapper coordinates)
         {
-            var item = await _dbContext.Coordinates.LastOrDefaultAsync(x => x.X == coordinates.X && x.Y == coordinates.Y);
-
+            var item = await _dbContext.CoordinatesWrapper.LastOrDefaultAsync(x => x.X == coordinates.X
+                                                                                && x.Y == coordinates.Y);
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
             return item;
+        }
+
+        private FlashObservationWrapper[] CreateFlashObservationWrapperArray(T[] array)
+        {
+            var wrappArray = new FlashObservationWrapper[] { };
+
+            for (var i = 0; i < array.Length; i++)
+            {
+                wrappArray[i] = (FlashObservationWrapper)(object)array[i];
+            }
+
+            return wrappArray;
         }
 
         #endregion

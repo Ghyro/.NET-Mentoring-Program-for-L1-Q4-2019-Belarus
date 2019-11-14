@@ -25,7 +25,7 @@ namespace Potestas.Observations
 
     [DataContract]
     [Serializable]
-    public class FlashObservation : IEnergyObservation
+    public struct FlashObservation : IEnergyObservation
     {
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
@@ -35,14 +35,12 @@ namespace Potestas.Observations
         private int _id;
         private int _coordinatesId;
 
-        public FlashObservation() { }
-
-        public FlashObservation(DateTime observationTime)
+        public FlashObservation(DateTime observationTime) : this()
         {
             ObservationTime = observationTime;
         }
 
-        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime)
+        public FlashObservation(int durationMs, double intensity, Coordinates observationPoint, DateTime observationTime) : this()
         {
             DurationMs = durationMs;
             Intensity = intensity;

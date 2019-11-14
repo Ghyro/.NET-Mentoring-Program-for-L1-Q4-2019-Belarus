@@ -2,6 +2,7 @@
 using Potestas.Context;
 using Potestas.Interfaces;
 using Potestas.Observations;
+using Potestas.Observations.Wrappers;
 using System;
 using System.Threading.Tasks;
 
@@ -32,18 +33,22 @@ namespace Potestas.Processors.Save
             if (ReferenceEquals(value, null))
                 throw new ArgumentNullException(nameof(T));
 
-            var item = value as FlashObservation;
+            var item = new FlashObservationWrapper((FlashObservation)(object)value);
 
             if (ReferenceEquals(item, null))
                 throw new ArgumentNullException(nameof(item));
 
             try
             {
-                AddCoordinatesToDatabase(item.ObservationPoint);
+                var coordinatesWrapper = new CoordinatesWrapper(item.ObservationPoint);
 
-                var coordinatesFromDb = GetLastFromDatabase(item.ObservationPoint).Result;
+                AddCoordinatesToDatabase(coordinatesWrapper);
 
-                item.CoordinatesId = coordinatesFromDb.Id;
+                var coordinatesFromDb = GetLastFromDatabase(coordinatesWrapper).Result;
+
+                var coordinatesId = item.CoordinatesId;
+
+                coordinatesId = coordinatesFromDb.Id;
 
                 AddObservationToDatabase(item);
             }
@@ -53,23 +58,24 @@ namespace Potestas.Processors.Save
             }     
         }
 
-        private void AddCoordinatesToDatabase(Coordinates coordinates)
+        private void AddCoordinatesToDatabase(CoordinatesWrapper coordinates)
         {
-            _dbContext.Coordinates.Add(coordinates);
+            _dbContext.CoordinatesWrapper.Add(coordinates);
 
             _dbContext.SaveChanges();
         }
 
-        private void AddObservationToDatabase(FlashObservation flashObservation)
+        private void AddObservationToDatabase(FlashObservationWrapper flashObservation)
         {
-            _dbContext.FlashObservations.Add(flashObservation);
+            _dbContext.FlashObservationWrapper.Add(flashObservation);
 
             _dbContext.SaveChanges();
         }
 
-        private async Task<Coordinates> GetLastFromDatabase(Coordinates coordinates)
+        private async Task<CoordinatesWrapper> GetLastFromDatabase(CoordinatesWrapper coordinates)
         {
-            var item = await _dbContext.Coordinates.LastOrDefaultAsync(x => x.X == coordinates.X && x.Y == coordinates.Y);
+            var item = await _dbContext.CoordinatesWrapper.LastOrDefaultAsync(x => x.X == coordinates.X
+                                                                                && x.Y == coordinates.Y);
 
             if (item == null)
                 throw new ArgumentNullException(nameof(item));

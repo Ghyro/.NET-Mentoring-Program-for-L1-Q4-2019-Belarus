@@ -19,7 +19,7 @@ namespace Potestas.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Potestas.Coordinates", b =>
+            modelBuilder.Entity("Potestas.Observations.Wrappers.CoordinatesWrapper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,10 +31,10 @@ namespace Potestas.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coordinates");
+                    b.ToTable("CoordinatesWrapper");
                 });
 
-            modelBuilder.Entity("Potestas.Observations.FlashObservation", b =>
+            modelBuilder.Entity("Potestas.Observations.Wrappers.FlashObservationWrapper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,12 +54,12 @@ namespace Potestas.Migrations
 
                     b.HasIndex("CoordinatesId");
 
-                    b.ToTable("FlashObservations");
+                    b.ToTable("FlashObservationWrapper");
                 });
 
-            modelBuilder.Entity("Potestas.Observations.FlashObservation", b =>
+            modelBuilder.Entity("Potestas.Observations.Wrappers.FlashObservationWrapper", b =>
                 {
-                    b.HasOne("Potestas.Coordinates", "ObservationPoint")
+                    b.HasOne("Potestas.Observations.Wrappers.CoordinatesWrapper", "ObservationPoint")
                         .WithMany("FlashObservations")
                         .HasForeignKey("CoordinatesId")
                         .OnDelete(DeleteBehavior.Cascade);
