@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Potestas.Observations.Wrappers
 {
@@ -23,7 +22,16 @@ namespace Potestas.Observations.Wrappers
             DurationMs = observation.DurationMs;
             ObservationTime = observation.ObservationTime;
             EstimatedValue = observation.EstimatedValue;
-            ObservationPoint = (CoordinatesWrapper)(object)observation.ObservationPoint;
+            ObservationPoint = CreateCoordinatesWrapper(observation);
+        }
+
+        private static CoordinatesWrapper CreateCoordinatesWrapper(FlashObservation observation)
+        {
+            return new CoordinatesWrapper
+            {
+                X = observation.ObservationPoint.X,
+                Y = observation.ObservationPoint.Y
+            };
         }
     }
 }

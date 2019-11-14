@@ -10,7 +10,7 @@ namespace Potestas.Processors.Save
 {
     public class SaveToSqlWithOrmProcessor<T> : IEnergyObservationProcessor<T> where T : IEnergyObservation
     {
-        private ObservationContext _dbContext;
+        private readonly ObservationContext _dbContext;
         public string Description => "SaveToSqlWithOrmProcessor";
 
         public SaveToSqlWithOrmProcessor(ObservationContext context)
@@ -46,9 +46,7 @@ namespace Potestas.Processors.Save
 
                 var coordinatesFromDb = GetLastFromDatabase(coordinatesWrapper).Result;
 
-                var coordinatesId = item.CoordinatesId;
-
-                coordinatesId = coordinatesFromDb.Id;
+                item.CoordinatesId = coordinatesFromDb.Id;
 
                 AddObservationToDatabase(item);
             }
@@ -74,8 +72,7 @@ namespace Potestas.Processors.Save
 
         private async Task<CoordinatesWrapper> GetLastFromDatabase(CoordinatesWrapper coordinates)
         {
-            var item = await _dbContext.CoordinatesWrapper.LastOrDefaultAsync(x => x.X == coordinates.X
-                                                                                && x.Y == coordinates.Y);
+            var item = await _dbContext.CoordinatesWrapper.LastOrDefaultAsync(x => x.X == coordinates.X && x.Y == coordinates.Y);
 
             if (item == null)
                 throw new ArgumentNullException(nameof(item));

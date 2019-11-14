@@ -32,9 +32,9 @@ namespace Potestas.Processors.Save
             if (ReferenceEquals(item, null))
                 throw new ArgumentNullException(nameof(item));
 
-            var insertCoordinates_storeProcedure = "InsertCoordinates";
+            const string INSERT_COORDINATES_SP = "InsertCoordinates";
 
-            var flash_query = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
+            var flashQuery = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
                         $" VALUES" +
                         $" ({item.DurationMs}," +
                         $" {item.Intensity}," +
@@ -49,22 +49,22 @@ namespace Potestas.Processors.Save
 
                 try
                 {    
-                    var command_flash = new SqlCommand(flash_query, sqlConnection)
+                    var commandFlash = new SqlCommand(flashQuery, sqlConnection)
                     {
                         Transaction = sqlTransaction
                     };
 
-                    var command_coordinates = new SqlCommand(insertCoordinates_storeProcedure, sqlConnection)
+                    var commandCoordinates = new SqlCommand(INSERT_COORDINATES_SP, sqlConnection)
                     {
                         CommandType = CommandType.StoredProcedure,
                         Transaction = sqlTransaction
                     };
 
                     var coordinatesParameters = CreateSqlParametersForStoreProcedury(item);
-                    command_coordinates.Parameters.AddRange(coordinatesParameters);
+                    commandCoordinates.Parameters.AddRange(coordinatesParameters);
 
-                    command_coordinates.ExecuteNonQuery();
-                    command_flash.ExecuteNonQuery();
+                    commandCoordinates.ExecuteNonQuery();
+                    commandFlash.ExecuteNonQuery();
 
                     sqlTransaction.Commit();
 
@@ -78,21 +78,21 @@ namespace Potestas.Processors.Save
             }       
         }
 
-        private SqlParameter[] CreateSqlParametersForStoreProcedury(IEnergyObservation energyObservation)
+        private static SqlParameter[] CreateSqlParametersForStoreProcedury(IEnergyObservation energyObservation)
         {
-            var x_Parameter = new SqlParameter
+            var xParameter = new SqlParameter
             {
                 ParameterName = "@X",
                 Value = energyObservation.ObservationPoint.X
             };
 
-            var y_Parameter = new SqlParameter
+            var yParameter = new SqlParameter
             {
                 ParameterName = "@Y",
                 Value = energyObservation.ObservationPoint.Y
             };
 
-            return new SqlParameter[] { x_Parameter, y_Parameter };
+            return new[] { xParameter, yParameter };
         }
     }
 }
