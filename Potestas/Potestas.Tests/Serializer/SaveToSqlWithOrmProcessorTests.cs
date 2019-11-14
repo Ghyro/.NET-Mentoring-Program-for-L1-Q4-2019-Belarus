@@ -27,14 +27,18 @@ namespace Potestas.Tests.Serializer
             // Assert
             using (DbContext)
             {
-                var flashObservation = DbContext.FlashObservations.FirstOrDefault(s => s.DurationMs == observation.DurationMs
+                var flashObservation = DbContext.FlashObservationWrapper.FirstOrDefault(s => s.DurationMs == observation.DurationMs
                 && s.Intensity == observation.Intensity);
                 Assert.IsNotNull(flashObservation);
 
-                var coordinates = DbContext.Coordinates.FirstOrDefault(v => v.Id == flashObservation.Id);
+                var coordinates = DbContext.CoordinatesWrapper.FirstOrDefault(v => v.Id == flashObservation.Id);
                 Assert.IsNotNull(coordinates);
 
-                flashObservation.ObservationPoint = coordinates;
+                var flshWrapPoint = flashObservation.ObservationPoint;
+
+                flshWrapPoint.Id = coordinates.Id;
+                flshWrapPoint.X = coordinates.X;
+                flshWrapPoint.Y = coordinates.Y;
 
                 Assert.AreEqual(flashObservation.ObservationPoint.X, observation.ObservationPoint.X);
                 Assert.AreEqual(flashObservation.ObservationPoint.Y, observation.ObservationPoint.Y);

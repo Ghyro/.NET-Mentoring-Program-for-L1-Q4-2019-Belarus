@@ -9,7 +9,7 @@ namespace Potestas.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Coordinates",
+                name: "CoordinatesWrapper",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -19,45 +19,45 @@ namespace Potestas.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Coordinates", x => x.Id);
+                    table.PrimaryKey("PK_CoordinatesWrapper", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "FlashObservations",
+                name: "FlashObservationWrapper",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DurationMs = table.Column<int>(nullable: false),
                     Intensity = table.Column<double>(nullable: false),
-                    EstimatedValue = table.Column<double>(nullable: false),
+                    DurationMs = table.Column<int>(nullable: false),
                     ObservationTime = table.Column<DateTime>(nullable: false),
+                    EstimatedValue = table.Column<double>(nullable: false),
                     CoordinatesId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FlashObservations", x => x.Id);
+                    table.PrimaryKey("PK_FlashObservationWrapper", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FlashObservations_Coordinates_CoordinatesId",
+                        name: "FK_FlashObservationWrapper_CoordinatesWrapper_CoordinatesId",
                         column: x => x.CoordinatesId,
-                        principalTable: "Coordinates",
+                        principalTable: "CoordinatesWrapper",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FlashObservations_CoordinatesId",
-                table: "FlashObservations",
+                name: "IX_FlashObservationWrapper_CoordinatesId",
+                table: "FlashObservationWrapper",
                 column: "CoordinatesId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FlashObservations");
+                name: "FlashObservationWrapper");
 
             migrationBuilder.DropTable(
-                name: "Coordinates");
+                name: "CoordinatesWrapper");
         }
     }
 }

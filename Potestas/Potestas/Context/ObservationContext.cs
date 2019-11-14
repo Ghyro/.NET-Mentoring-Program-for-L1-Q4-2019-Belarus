@@ -1,25 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Potestas.Observations;
+using Potestas.Observations.Wrappers;
 using System.Configuration;
 
 namespace Potestas.Context
 {
     public class ObservationContext : DbContext
     {
-        public DbSet<FlashObservation> FlashObservations { get; set; }
-        public DbSet<Coordinates> Coordinates { get; set; }
+        public DbSet<FlashObservationWrapper> FlashObservationWrapper { get; set; }
+        public DbSet<CoordinatesWrapper> CoordinatesWrapper { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConfigurationManager.AppSettings["EFConnection"]);
+            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ObservationsWrapper;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FlashObservation>().HasKey(x => x.Id);
-            modelBuilder.Entity<Coordinates>().HasKey(x => x.Id);
+            modelBuilder.Entity<FlashObservationWrapper>().HasKey(x => x.Id);
+            modelBuilder.Entity<CoordinatesWrapper>().HasKey(x => x.Id);
 
-            modelBuilder.Entity<FlashObservation>()
+            modelBuilder.Entity<FlashObservationWrapper>()
             .HasOne(x => x.ObservationPoint)
             .WithMany(t => t.FlashObservations)
             .HasForeignKey(p => p.CoordinatesId)

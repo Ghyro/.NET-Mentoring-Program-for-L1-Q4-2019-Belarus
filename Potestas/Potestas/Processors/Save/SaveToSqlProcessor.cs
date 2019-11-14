@@ -3,6 +3,7 @@ using Potestas.Observations;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace Potestas.Processors.Save
 {
@@ -26,18 +27,14 @@ namespace Potestas.Processors.Save
             if (ReferenceEquals(value, null))            
                 throw new ArgumentNullException(nameof(T));
 
-            var item = value as FlashObservation;
+            var item = (FlashObservation)(object)value;
 
             if (ReferenceEquals(item, null))
                 throw new ArgumentNullException(nameof(item));
 
-            try
-            {
-                using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
-                {
-                    var coordinates_query = $"INSERT INTO Coordinates (X, Y) VALUES ({item.ObservationPoint.X}, {item.ObservationPoint.Y})";
+            var insertCoordinates_storeProcedure = "InsertCoordinates";
 
-                    var flash_query = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
+            var flash_query = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
                         $" VALUES" +
                         $" ({item.DurationMs}," +
                         $" {item.Intensity}," +
@@ -45,22 +42,57 @@ namespace Potestas.Processors.Save
                         $" {item.ObservationTime.ToShortDateString()}," +
                         $" (SELECT Id FROM Coordinates WHERE X = {item.ObservationPoint.X} AND Y = {item.ObservationPoint.Y}))";
 
-                    var command_coordinates = new SqlCommand(coordinates_query, sqlConnection);
-                    var command_flash = new SqlCommand(flash_query, sqlConnection);
+            using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
+            {
+                sqlConnection.Open();
+                var sqlTransaction = sqlConnection.BeginTransaction();
 
-                    sqlConnection.Open();
+                try
+                {    
+                    var command_flash = new SqlCommand(flash_query, sqlConnection)
+                    {
+                        Transaction = sqlTransaction
+                    };
+
+                    var command_coordinates = new SqlCommand(insertCoordinates_storeProcedure, sqlConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure,
+                        Transaction = sqlTransaction
+                    };
+
+                    var coordinatesParameters = CreateSqlParametersForStoreProcedury(item);
+                    command_coordinates.Parameters.AddRange(coordinatesParameters);
 
                     command_coordinates.ExecuteNonQuery();
                     command_flash.ExecuteNonQuery();
 
+                    sqlTransaction.Commit();
+
                     OnCompleted();
                 }
-                
-            }
-            catch(Exception ex)
+                catch (Exception ex)
+                {
+                    sqlTransaction.Rollback();
+                    OnError(ex);
+                }
+            }       
+        }
+
+        private SqlParameter[] CreateSqlParametersForStoreProcedury(IEnergyObservation energyObservation)
+        {
+            var x_Parameter = new SqlParameter
             {
-                OnError(ex);
-            }           
+                ParameterName = "@X",
+                Value = energyObservation.ObservationPoint.X
+            };
+
+            var y_Parameter = new SqlParameter
+            {
+                ParameterName = "@Y",
+                Value = energyObservation.ObservationPoint.Y
+            };
+
+            return new SqlParameter[] { x_Parameter, y_Parameter };
         }
     }
 }

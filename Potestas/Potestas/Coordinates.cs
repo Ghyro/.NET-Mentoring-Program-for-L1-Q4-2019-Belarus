@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace Potestas
@@ -20,7 +19,7 @@ namespace Potestas
 
     [DataContract]
     [Serializable]
-    public class Coordinates
+    public struct Coordinates
     {
         [DataMember]
         [Key]
@@ -29,13 +28,11 @@ namespace Potestas
         private double _x;
         private double _y;
 
-        public Coordinates() { }
-
-        public Coordinates(double x, double y)
+        public Coordinates(double x, double y) : this()
         {
             X = x;
-            Y = y; 
-        }        
+            Y = y;
+        }       
 
         [DataMember]
         public double X
