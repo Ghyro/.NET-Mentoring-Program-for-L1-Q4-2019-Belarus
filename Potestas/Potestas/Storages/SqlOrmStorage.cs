@@ -161,8 +161,7 @@ namespace Potestas.Storages
         {
             using (_dbContext)
             {
-                _dbContext.Database.ExecuteSqlCommand(@"DELETE FROM Coordinates");
-                _dbContext.Database.ExecuteSqlCommand(@"DELETE FROM FlashObservations");
+                _dbContext.CoordinatesWrapper.RemoveRange(_dbContext.CoordinatesWrapper);
                 _dbContext.SaveChanges();
             }
         }
