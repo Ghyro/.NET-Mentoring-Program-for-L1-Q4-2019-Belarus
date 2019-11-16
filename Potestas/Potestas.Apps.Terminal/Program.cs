@@ -2,7 +2,6 @@
 using Potestas.Analizers;
 using Potestas.ConcreteFactories;
 using Potestas.Interfaces;
-using Potestas.Processors.Save;
 using Potestas.Sources;
 using Potestas.Storages;
 
@@ -22,7 +21,7 @@ namespace Potestas.Apps.Terminal
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
             _testRegistration = _app.CreateAndRegisterSource(new ConsoleSourceFactory());
-            _testRegistration.AttachProcessingGroup(new SaveToSqlProcessorFactory());
+            _testRegistration.AttachProcessingGroup(new SaveToSqlWithOrmProcessorFactory());
             _testRegistration.AttachProcessingGroup(new ConsoleProcessingFactory());
             _testRegistration.Start().Wait();
         }

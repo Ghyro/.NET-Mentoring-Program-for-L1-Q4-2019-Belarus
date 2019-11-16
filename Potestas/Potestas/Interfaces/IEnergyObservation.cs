@@ -8,6 +8,8 @@ namespace Potestas.Interfaces
      */
     public interface IEnergyObservation
     {
+        int Id { get; set; }
+
         Coordinates ObservationPoint { get; }
 
         double EstimatedValue { get; }

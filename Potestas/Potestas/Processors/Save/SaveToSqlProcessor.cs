@@ -3,6 +3,7 @@ using Potestas.Observations;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace Potestas.Processors.Save
 {
@@ -17,6 +18,7 @@ namespace Potestas.Processors.Save
 
         public void OnError(Exception error)
         {
+            Console.WriteLine();
             Console.WriteLine(error.Message);
         }
 
@@ -25,41 +27,72 @@ namespace Potestas.Processors.Save
             if (ReferenceEquals(value, null))            
                 throw new ArgumentNullException(nameof(T));
 
-            var flash = new FlashObservation();
+            var item = (FlashObservation)(object)value;
 
-            if (value is FlashObservation)
-                flash = (FlashObservation)(object)value;
+            if (ReferenceEquals(item, null))
+                throw new ArgumentNullException(nameof(item));
 
-            try
-            {
-                using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
-                {
-                    var coordinates_query = $"INSERT INTO Coordinates (X, Y) VALUES ({flash.ObservationPoint.X}, {flash.ObservationPoint.Y})";
+            const string INSERT_COORDINATES_SP = "InsertCoordinates";
 
-                    var flash_query = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
+            var flashQuery = $"INSERT INTO FlashObservations (Intensity, DurationMs, EstimatedValue, ObservationTime, CoordinatesId)" +
                         $" VALUES" +
-                        $" ({flash.DurationMs}," +
-                        $" {flash.Intensity}," +
-                        $" {flash.EstimatedValue}," +
-                        $" {flash.ObservationTime.ToShortDateString()}," +
-                        $" (SELECT Id FROM Coordinates WHERE X = {flash.ObservationPoint.X} AND Y = {flash.ObservationPoint.Y}))";
+                        $" ({item.DurationMs}," +
+                        $" {item.Intensity}," +
+                        $" {item.EstimatedValue}," +
+                        $" {item.ObservationTime.ToShortDateString()}," +
+                        $" (SELECT Id FROM Coordinates WHERE X = {item.ObservationPoint.X} AND Y = {item.ObservationPoint.Y}))";
 
-                    var command_coordinates = new SqlCommand(coordinates_query, sqlConnection);
-                    var command_flash = new SqlCommand(flash_query, sqlConnection);
+            using (var sqlConnection = new SqlConnection(ConfigurationManager.AppSettings["ADOConnection"]))
+            {
+                sqlConnection.Open();
+                var sqlTransaction = sqlConnection.BeginTransaction();
 
-                    sqlConnection.Open();
+                try
+                {    
+                    var commandFlash = new SqlCommand(flashQuery, sqlConnection)
+                    {
+                        Transaction = sqlTransaction
+                    };
 
-                    command_coordinates.ExecuteNonQuery();
-                    command_flash.ExecuteNonQuery();
+                    var commandCoordinates = new SqlCommand(INSERT_COORDINATES_SP, sqlConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure,
+                        Transaction = sqlTransaction
+                    };
+
+                    var coordinatesParameters = CreateSqlParametersForStoreProcedury(item);
+                    commandCoordinates.Parameters.AddRange(coordinatesParameters);
+
+                    commandCoordinates.ExecuteNonQuery();
+                    commandFlash.ExecuteNonQuery();
+
+                    sqlTransaction.Commit();
 
                     OnCompleted();
                 }
-                
-            }
-            catch(Exception ex)
+                catch (Exception ex)
+                {
+                    sqlTransaction.Rollback();
+                    OnError(ex);
+                }
+            }       
+        }
+
+        private static SqlParameter[] CreateSqlParametersForStoreProcedury(IEnergyObservation energyObservation)
+        {
+            var xParameter = new SqlParameter
             {
-                OnError(ex);
-            }           
+                ParameterName = "@X",
+                Value = energyObservation.ObservationPoint.X
+            };
+
+            var yParameter = new SqlParameter
+            {
+                ParameterName = "@Y",
+                Value = energyObservation.ObservationPoint.Y
+            };
+
+            return new[] { xParameter, yParameter };
         }
     }
 }

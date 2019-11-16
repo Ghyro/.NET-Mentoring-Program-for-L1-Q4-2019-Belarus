@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Potestas.Interfaces;
 
@@ -26,13 +27,13 @@ namespace Potestas.Observations
     [Serializable]
     public struct FlashObservation : IEnergyObservation
     {
-        public int Id { get; set; }
-        public int CoordinatesId { get; set; }
         private const int MAX_INTENSITY = 2000000000;
         private double _intensity;
         private int _durationMs;
         private DateTime _observationTime;
         private double _estimatedValue;
+        private int _id;
+        private int _coordinatesId;
 
         public FlashObservation(DateTime observationTime) : this()
         {
@@ -48,7 +49,15 @@ namespace Potestas.Observations
         }
 
         [DataMember]
-        public Coordinates ObservationPoint { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        [DataMember]
+        public int DurationMs
+        {
+            get => _durationMs;
+            set => _durationMs = value;
+        }
 
         [DataMember]
         public double Intensity
@@ -60,20 +69,6 @@ namespace Potestas.Observations
                     throw new ArgumentOutOfRangeException(nameof(value));
                 _intensity = value;
             }
-        }
-
-        [DataMember]
-        public int DurationMs
-        {
-            get => _durationMs;
-            set => _durationMs = value;
-        }
-
-        [DataMember]
-        public DateTime ObservationTime
-        {
-            get => _observationTime;
-            set => _observationTime = value;
         }
 
         [DataMember]
@@ -89,6 +84,28 @@ namespace Potestas.Observations
             set => _estimatedValue = value;
         }
 
+        [DataMember]
+        public DateTime ObservationTime
+        {
+            get => _observationTime;
+            set => _observationTime = value;
+        }
+
+        [DataMember]
+        public int CoordinatesId
+        {
+            get => _coordinatesId;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentNullException(nameof(value));
+                _coordinatesId = value;
+            }
+        }
+
+        [DataMember]
+        public Coordinates ObservationPoint { get; set; }    
+       
         public override string ToString()
         {
             return
@@ -125,7 +142,7 @@ namespace Potestas.Observations
             if (ReferenceEquals(null, obj))
                 return false;
 
-            return obj is FlashObservation && Equals((FlashObservation)obj);
+            return obj is FlashObservation observation && Equals(observation);
         }
 
         public override int GetHashCode()

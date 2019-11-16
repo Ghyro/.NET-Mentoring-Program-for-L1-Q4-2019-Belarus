@@ -1,7 +1,6 @@
 ﻿using Potestas.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -103,20 +102,94 @@ namespace Potestas.Analizers
 
         public IDictionary<Coordinates, int> GetDistributionByCoordinates()
         {
-            //
-            throw new NotImplementedException();
+            var query = @"SELECT Coordinates.Id, Coordinates.X, Coordinates.Y, COUNT(FlashObservations.Id) FROM FlashObservations
+                          JOIN Coordinates ON Coordinates.Id = FlashObservations.CoordinatesId
+                          GROUP BY Coordinates.Id, Coordinates.X,Coordinates.Y";
+
+            var result = new Dictionary<Coordinates, int>();
+
+            using (_sqlConnection)
+            {
+                _sqlConnection.Open();
+
+                var sqlAdapter = new SqlDataAdapter(query, _sqlConnection);
+
+                var dataSet = new DataSet();
+
+                sqlAdapter.Fill(dataSet);
+
+                foreach (DataTable dt in dataSet.Tables)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        var coordinates = new Coordinates
+                        {
+                            X = Convert.ToDouble(row.ItemArray[1]),
+                            Y = Convert.ToDouble(row.ItemArray[2])
+                        };
+
+                        result.Add(coordinates, Convert.ToInt32(row.ItemArray[3]));
+                    }
+                }
+            }
+
+            return result;
         }
 
         public IDictionary<double, int> GetDistributionByEnergyValue()
         {
-            //
-            throw new NotImplementedException();
+            var query = @"SELECT EstimatedValue, COUNT(Id) FROM FlashObservations GROUP BY EstimatedValue";
+
+            var result = new Dictionary<double, int>();
+
+            using (_sqlConnection)
+            {
+                _sqlConnection.Open();
+
+                var sqlAdapter = new SqlDataAdapter(query, _sqlConnection);
+
+                var dataSet = new DataSet();
+
+                sqlAdapter.Fill(dataSet);
+
+                foreach (DataTable dt in dataSet.Tables)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        result.Add(Convert.ToDouble(row.ItemArray[0]), Convert.ToInt32(row.ItemArray[1]));
+                    }
+                }
+            }
+
+            return result;
         }
 
         public IDictionary<DateTime, int> GetDistributionByObservationTime()
         {
-            //
-            throw new NotImplementedException();
+            var query = @"SELECT ObservationTime, COUNT(Id) FROM FlashObservations GROUP BY ObservationTime";
+
+            var result = new Dictionary<DateTime, int>();
+
+            using (_sqlConnection)
+            {
+                _sqlConnection.Open();
+
+                var sqlAdapter = new SqlDataAdapter(query, _sqlConnection);
+
+                var dataSet = new DataSet();
+
+                sqlAdapter.Fill(dataSet);
+
+                foreach (DataTable dt in dataSet.Tables)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        result.Add((DateTime)row.ItemArray[0], Convert.ToInt32(row.ItemArray[1]));
+                    }
+                }
+            }
+
+            return result;
         }
 
         public double GetMaxEnergy()
