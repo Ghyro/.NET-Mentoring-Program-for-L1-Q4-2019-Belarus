@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Potestas.Interfaces;
 
-namespace Potestas.Analizers
+namespace Potestas.Analyzers
 {
     /* TASK. Implement an Analizer for Observations using LINQ
      */

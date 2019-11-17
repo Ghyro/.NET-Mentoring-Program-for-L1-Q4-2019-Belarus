@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Potestas.Analizers;
+using Potestas.Analyzers;
 using Potestas.Interfaces;
 
 namespace Potestas.Tests.LINQ

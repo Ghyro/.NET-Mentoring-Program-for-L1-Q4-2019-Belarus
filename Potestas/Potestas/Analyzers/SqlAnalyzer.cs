@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Potestas.Analizers
+namespace Potestas.Analyzers
 {
     public class SqlAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
     {
