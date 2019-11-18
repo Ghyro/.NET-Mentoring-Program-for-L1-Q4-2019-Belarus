@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using Potestas.Analizers;
+using Potestas.Analyzers;
 using Potestas.Interfaces;
 using Potestas.Observations;
 

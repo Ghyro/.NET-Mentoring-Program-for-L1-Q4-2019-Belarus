@@ -1,4 +1,4 @@
-﻿using Potestas.Analizers;
+﻿using Potestas.Analyzers;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;
 using Potestas.Storages;

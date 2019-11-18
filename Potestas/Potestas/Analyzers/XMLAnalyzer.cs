@@ -5,7 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Potestas.Interfaces;
 
-namespace Potestas.Analizers
+namespace Potestas.Analyzers
 {
     public class XMLAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
     {
