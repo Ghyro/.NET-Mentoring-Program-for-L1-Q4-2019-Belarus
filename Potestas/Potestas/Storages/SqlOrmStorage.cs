@@ -13,8 +13,8 @@ namespace Potestas.Storages
 {
     public class SqlOrmStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
-        private List<FlashObservationWrapper> _observations;
-        private ObservationContext _dbContext;
+        private readonly List<FlashObservationWrapper> _observations;
+        private readonly ObservationContext _dbContext;
 
         public SqlOrmStorage(ObservationContext context)
         {

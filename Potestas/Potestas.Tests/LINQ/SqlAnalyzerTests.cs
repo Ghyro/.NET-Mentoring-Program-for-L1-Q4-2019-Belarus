@@ -7,13 +7,13 @@ namespace Potestas.Tests.LINQ
     [TestFixture]
     public class SqlAnalizerTests
     {
-        private readonly string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ObservationCenter;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private const string ConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ObservationCenter;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         [TestCase(4401)]
         public void GetAverageEnergyTest_ReturnAverageEnergy(double expectedResult)
         {
             // Arange
-            var sqlAnalizer = new SqlAnalyzer<IEnergyObservation>(_connectionString);
+            var sqlAnalizer = new SqlAnalyzer<IEnergyObservation>(ConnectionString);
 
             // Act
             var result = sqlAnalizer.GetAverageEnergy();
@@ -27,7 +27,7 @@ namespace Potestas.Tests.LINQ
         public void GetMaxEnergyTest_ReturnAverageEnergy(double expectedResult)
         {
             // Arange
-            var sqlAnalizer = new SqlAnalyzer<IEnergyObservation>(_connectionString);
+            var sqlAnalizer = new SqlAnalyzer<IEnergyObservation>(ConnectionString);
 
             // Act
             var result = sqlAnalizer.GetMaxEnergy();

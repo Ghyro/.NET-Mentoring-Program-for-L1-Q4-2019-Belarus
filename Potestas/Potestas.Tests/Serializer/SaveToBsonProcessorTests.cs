@@ -11,21 +11,21 @@ namespace Potestas.Tests.Serializer
     [TestFixture]
     public class SaveToBsonProcessorTests
     {
-        private const string connectionString = @"mongodb://localhost:27017";
+        private const string ConnectionString = @"mongodb://localhost:27017";
 
         [Test]
         [TestCase(11.2, 14.0, 14.77, 1993)]
         public void SaveToBsonProcessor_SaveToDatabase(double x, double y, double intensity, int duration)
         {
             // Arrange            
-            var processor = new SaveToBsonProcessor<IEnergyObservation>(connectionString);
+            var processor = new SaveToBsonProcessor<IEnergyObservation>(ConnectionString);
             var observation = new FlashObservation(duration, intensity, new Coordinates(x, y), DateTime.UtcNow);
 
             // Act
             processor.OnNext(observation);
 
             // Assert
-            var mongoDbClient = new MongoClient(connectionString);
+            var mongoDbClient = new MongoClient(ConnectionString);
             var mongoDatabase = mongoDbClient.GetDatabase("Observations");
             var bsonCollection = mongoDatabase.GetCollection<BsonDocument>("FlashObservation");
 

@@ -9,7 +9,7 @@ namespace Potestas.Processors.Save
 {
     public class SaveToBsonProcessor<T> : IEnergyObservationProcessor<T> where T : IEnergyObservation
     {
-        private readonly string _connectionString = null;
+        private readonly string _connectionString;
 
         public SaveToBsonProcessor() { }
         public SaveToBsonProcessor(string connectionString)

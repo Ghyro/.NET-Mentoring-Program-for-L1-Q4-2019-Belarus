@@ -1,5 +1,4 @@
-﻿using Potestas.Interfaces;
-using Potestas.Observations;
+﻿using Potestas.Observations;
 using System;
 
 namespace Potestas.Sources

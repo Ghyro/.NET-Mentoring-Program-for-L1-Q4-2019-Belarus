@@ -53,17 +53,14 @@ namespace Potestas.Analyzers
         }
 
         public IDictionary<Coordinates, int> GetDistributionByCoordinates()
-        {            
-            Func<XElement, Coordinates> creator = item =>
+        {
+            Coordinates Creator(XElement item) => new Coordinates
             {
-                return new Coordinates
-                {
-                    X = (double)item.Element("X"),
-                    Y = (double)item.Element("Y")
-                };
+                X = (double) item.Element("X"),
+                Y = (double) item.Element("Y")
             };
 
-            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).GroupBy(creator).ToDictionary(x => x.Key, v => v.Count());
+            return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).GroupBy(Creator).ToDictionary(x => x.Key, v => v.Count());
         }
 
         public IDictionary<double, int> GetDistributionByEnergyValue()
@@ -87,19 +84,19 @@ namespace Potestas.Analyzers
             if (coordinates == null)
                 throw new ArgumentException(nameof(coordinates));
 
-            Func<XElement, bool> expression = item =>
+            bool Expression(XElement item)
             {
                 var flashCoordinatis = new Coordinates
                 {
-                    X = (double)item.Element("X"),
-                    Y = (double)item.Element("Y")
+                    X = (double) item.Element("X"),
+                    Y = (double) item.Element("Y")
                 };
 
                 return flashCoordinatis == coordinates;
-            };
+            }
 
             return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
-                .Where(expression).Max(s => (double)s.Element(ESTIMATED_VALUE));
+                .Where(Expression).Max(s => (double)s.Element(ESTIMATED_VALUE));
         }
 
         public double GetMaxEnergy(DateTime dateTime)
@@ -140,19 +137,19 @@ namespace Potestas.Analyzers
             if (coordinates == null)
                 throw new ArgumentException(nameof(coordinates));
 
-            Func<XElement, bool> expression = item =>
+            bool Expression(XElement item)
             {
                 var flashCoordinatis = new Coordinates
                 {
-                    X = (double)item.Element("X"),
-                    Y = (double)item.Element("Y")
+                    X = (double) item.Element("X"),
+                    Y = (double) item.Element("Y")
                 };
 
                 return flashCoordinatis == coordinates;
-            };            
+            }
 
             return _xdoc.Element(OBSERVATIONS).Elements(FLASH_OBSERVATIONS).Elements(OBSERVATION_POINT)
-                .Where(expression).Min(s => (double)s.Element(ESTIMATED_VALUE));
+                .Where(Expression).Min(s => (double)s.Element(ESTIMATED_VALUE));
         }
 
         public double GetMinEnergy(DateTime dateTime)

@@ -13,7 +13,7 @@ namespace Potestas.Storages
     public class XmlFileStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
         private readonly string _filePath;
-        private List<FlashObservation> _observations;
+        private readonly List<FlashObservation> _observations;
         private readonly XmlSerializer _xmlSerializer;
 
         public XmlFileStorage()

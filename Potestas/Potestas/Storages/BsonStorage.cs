@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using Potestas.Analyzers;
 using Potestas.Interfaces;
 using Potestas.Observations;
 using System;
@@ -13,7 +12,7 @@ namespace Potestas.Storages
 {
     public class BsonStorage<T> : IEnergyObservationStorage<T> where T : IEnergyObservation
     {
-        private List<FlashObservation> _observations;
+        private readonly List<FlashObservation> _observations;
 
         public BsonStorage()
         {
