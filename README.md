@@ -10,8 +10,8 @@
 
 5. ORM (done)
 
-6. NoSQL (in progress)
+6. NoSQL (done)
 
-7. Web programming
+7. Web programming (in progress)
 
 8. Application Health

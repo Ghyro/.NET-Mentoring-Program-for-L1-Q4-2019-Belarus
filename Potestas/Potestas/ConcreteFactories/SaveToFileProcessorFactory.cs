@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 using System.IO;
-using Potestas.Analizers;
+using Potestas.Analyzers;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;
 using Potestas.Processors.Serializers;

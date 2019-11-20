@@ -1,28 +1,27 @@
-﻿using Potestas.Analyzers;
-using Potestas.Context;
+﻿using System;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;
 using Potestas.Storages;
 
 namespace Potestas.ConcreteFactories
 {
-    public class SaveToSqlWithOrmProcessorFactory : IProcessingFactory
+    public class SaveToBsonProcessorFactory : IProcessingFactory
     {
         private IEnergyObservationStorage<IEnergyObservation> _storage;
 
         public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
         {
-            return new SqlOrmAnalyzer<IEnergyObservation>(new ObservationContext());
+            return null;
         }
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()
         {
-            return new SaveToSqlWithOrmProcessor<IEnergyObservation>(new ObservationContext());
+            return new SaveToBsonProcessor<IEnergyObservation>();
         }
 
         public IEnergyObservationStorage<IEnergyObservation> CreateStorage()
         {
-            return _storage ?? (_storage = new SqlOrmStorage<IEnergyObservation>(new ObservationContext()));
+            return _storage ?? (_storage = new BsonStorage<IEnergyObservation>());
         }
     }
 }
