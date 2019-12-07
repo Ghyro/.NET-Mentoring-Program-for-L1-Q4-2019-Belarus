@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Potestas.Observations.Wrappers
 {
     public class FlashObservationWrapper
     {
-        [Key]
+        
         public int Id { get; set; }
         public double Intensity { get; set; }
         public int DurationMs { get; set; }

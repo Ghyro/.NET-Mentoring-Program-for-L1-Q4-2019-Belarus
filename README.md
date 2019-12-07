@@ -12,6 +12,6 @@
 
 6. NoSQL (done)
 
-7. Web programming (in progress)
+7. Web programming (done)
 
-8. Application Health
+8. Application Health (in progress)
