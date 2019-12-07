@@ -1,7 +1,6 @@
 ﻿using Potestas.Observations;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace Potestas
@@ -22,7 +21,7 @@ namespace Potestas
     public struct Coordinates
     {
         [DataMember]
-        [Key]
+        
         public int Id { get; set; }
         public List<FlashObservation> FlashObservations { get; set; }
         private double _x;
