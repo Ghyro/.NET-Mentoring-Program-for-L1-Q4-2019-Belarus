@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Potestas.Interfaces;
 
@@ -49,7 +48,7 @@ namespace Potestas.Observations
         }
 
         [DataMember]
-        [Key]
+        
         public int Id { get; set; }
 
         [DataMember]

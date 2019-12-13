@@ -1,0 +1,17 @@
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.WebHTTP.deps.json
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.WebHTTP.runtimeconfig.json
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.WebHTTP.runtimeconfig.dev.json
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.WebHTTP.dll
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.WebHTTP.pdb
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.csproj.CoreCompileInputs.cache
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.RazorAssemblyInfo.cache
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.RazorAssemblyInfo.cs
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.AssemblyInfoInputs.cache
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.AssemblyInfo.cs
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.RazorTargetAssemblyInfo.cache
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.dll
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.pdb
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.csprojAssemblyReference.cache
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.dll
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\bin\Debug\netcoreapp2.1\Potestas.pdb
+D:\epam-mentoring-2019-NET\.NET-Mentoring-Program-for-L1-Q4-2019-Belarus\Potestas\Potestas.WebHTTP\obj\Debug\netcoreapp2.1\Potestas.WebHTTP.csproj.CopyComplete
