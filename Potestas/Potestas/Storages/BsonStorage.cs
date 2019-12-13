@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Potestas.Storages
 {
@@ -82,8 +83,6 @@ namespace Potestas.Storages
 
                 _observations.Remove((FlashObservation)(object)removeItem);
 
-                InsertToDatabaseTable();
-
                 return true;
             }
             catch
@@ -112,7 +111,7 @@ namespace Potestas.Storages
 
         private void FetchFromDatabaseTable()
         {
-            var mongoDbClient = new MongoClient(ConfigurationManager.AppSettings["MongoDbConnection"]);
+            var mongoDbClient = new MongoClient(ConfigurationManager.AppSettings["MongoDbConnection"] ?? "mongodb://localhost:27017");
             var mongoDb = mongoDbClient.GetDatabase("Observations");
             var mongoCollection = mongoDb.GetCollection<BsonDocument>("FlashObservation");
             var mongoFilter = new BsonDocument();
@@ -123,20 +122,27 @@ namespace Potestas.Storages
 
                 foreach(var bsonDoc in bsonDocuments)
                 {
-                    var flashObservation = new FlashObservation
+                    try
                     {
-                        Intensity = bsonDoc["Intensity"].AsDouble,
-                        DurationMs = bsonDoc["DurationMs"].AsInt32,
-                        ObservationTime = bsonDoc["ObservationTime"].ToUniversalTime(),
-                        EstimatedValue = bsonDoc["EstimatedValue"].AsDouble,
-                        ObservationPoint = new Coordinates
+                        var flashObservation = new FlashObservation
                         {
-                            X = bsonDoc["Coordinates"]["X"].AsDouble,
-                            Y = bsonDoc["Coordinates"]["Y"].AsDouble
-                        }
-                    };
+                            Intensity = bsonDoc["Intensity"].AsDouble,
+                            DurationMs = bsonDoc["DurationMs"].AsInt32,
+                            ObservationTime = bsonDoc["ObservationTime"].ToUniversalTime(),
+                            EstimatedValue = bsonDoc["EstimatedValue"].AsDouble,
+                            ObservationPoint = new Coordinates
+                            {
+                                X = bsonDoc["Coordinates"]["X"].AsDouble,
+                                Y = bsonDoc["Coordinates"]["Y"].AsDouble
+                            }
+                        };
 
-                    _observations.Add(flashObservation);
+                        _observations.Add(flashObservation);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }                
             }
             catch (Exception ex)
@@ -170,7 +176,7 @@ namespace Potestas.Storages
 
         private void ClearDatabaseTable()
         {
-            var mongoDbClient = new MongoClient(ConfigurationManager.AppSettings["MongoDbConnection"]);
+            var mongoDbClient = new MongoClient(ConfigurationManager.AppSettings["MongoDbConnection"] ?? "mongodb://localhost:27017");
 
             var mongoDatabase = mongoDbClient.GetDatabase("Observations");
 
@@ -180,6 +186,8 @@ namespace Potestas.Storages
 
             bsonCollection.DeleteMany(mongoFilter);
         }
+
+        public async Task<IEnumerable<FlashObservation>> GetObservations() => _observations;
 
         #endregion
     }

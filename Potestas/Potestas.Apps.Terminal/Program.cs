@@ -51,7 +51,7 @@ namespace Potestas.Apps.Terminal
     {
         private IEnergyObservationStorage<IEnergyObservation> _storage = null;
 
-        public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
+        public IEnergyObservationAnalyzer<IEnergyObservation> CreateAnalizer()
         {
             return new LINQAnalyzer<IEnergyObservation>(CreateStorage());
         }

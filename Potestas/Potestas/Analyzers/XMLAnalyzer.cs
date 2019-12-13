@@ -7,7 +7,7 @@ using Potestas.Interfaces;
 
 namespace Potestas.Analyzers
 {
-    public class XMLAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
+    public class XMLAnalyzer<T> : IEnergyObservationAnalyzer<T> where T : IEnergyObservation
     {
         private readonly XDocument _xdoc;
         private const string OBSERVATIONS = "Observations";

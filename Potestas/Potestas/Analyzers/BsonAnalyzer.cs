@@ -3,12 +3,13 @@ using MongoDB.Driver;
 using Potestas.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using Potestas.Observations;
 using System.Linq;
 
 namespace Potestas.Analyzers
 {
-    public class BsonAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
+    public class BsonAnalyzer<T> : IEnergyObservationAnalyzer<T> where T : IEnergyObservation
     {
         private readonly MongoClient _mongoClient;
         private readonly IMongoDatabase _mongoDatabase;
@@ -19,6 +20,13 @@ namespace Potestas.Analyzers
             _mongoClient = mongoClient;
             _mongoDatabase = _mongoClient.GetDatabase(databaseName);
             _bsonCollection = _mongoDatabase.GetCollection<BsonDocument>(bsonCollectionName);
+        }
+
+        public BsonAnalyzer()
+        {
+            _mongoClient = new MongoClient(ConfigurationManager.AppSettings["MongoDbConnection"] ?? "mongodb://localhost:27017");
+            _mongoDatabase = _mongoClient.GetDatabase(ConfigurationManager.AppSettings["MongoDbName"] ?? "Observations");
+            _bsonCollection = _mongoDatabase.GetCollection<BsonDocument>(ConfigurationManager.AppSettings["MongoDbTable"] ?? "FlashObservation");
         }
 
         public double GetAverageEnergy()

@@ -14,7 +14,7 @@ namespace Potestas.ConcreteFactories
             return new JsonSerializeProcessor<IEnergyObservation>();
         }
 
-        public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
+        public IEnergyObservationAnalyzer<IEnergyObservation> CreateAnalizer()
         {
             return new LINQAnalyzer<IEnergyObservation>(CreateStorage());
         }

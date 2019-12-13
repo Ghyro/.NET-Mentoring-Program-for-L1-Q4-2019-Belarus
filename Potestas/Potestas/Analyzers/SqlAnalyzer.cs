@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace Potestas.Analyzers
 {
-    public class SqlAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
+    public class SqlAnalyzer<T> : IEnergyObservationAnalyzer<T> where T : IEnergyObservation
     {
         private SqlConnection _sqlConnection;
 

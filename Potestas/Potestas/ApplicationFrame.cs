@@ -20,7 +20,7 @@ namespace Potestas
 
         public IEnergyObservationStorage<IEnergyObservation> Storage { get; }
 
-        public IEnergyObservationAnalizer<IEnergyObservation> Analizer { get; }
+        public IEnergyObservationAnalyzer<IEnergyObservation> Analizer { get; }
 
         public RegisteredSourceProcessingGroup(RegisteredEnergyObservationSourceWrapper sourceRegistration,
             IProcessingFactory factory)

@@ -9,7 +9,7 @@ namespace Potestas.ConcreteFactories
     {
         private IEnergyObservationStorage<IEnergyObservation> _storage;
 
-        public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
+        public IEnergyObservationAnalyzer<IEnergyObservation> CreateAnalizer()
         {
             return new XMLAnalyzer<IEnergyObservation>();
         }

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Potestas.Analyzers
 {
-    public class SqlOrmAnalyzer<T> : IEnergyObservationAnalizer<T> where T : IEnergyObservation
+    public class SqlOrmAnalyzer<T> : IEnergyObservationAnalyzer<T> where T : IEnergyObservation
     {
         private ObservationContext _dbContext;
 

@@ -7,7 +7,7 @@
 
         IEnergyObservationStorage<T> Storage { get; }
 
-        IEnergyObservationAnalizer<T> Analizer { get; }
+        IEnergyObservationAnalyzer<T> Analizer { get; }
 
         void Detach();
     }

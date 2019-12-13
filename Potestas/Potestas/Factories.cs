@@ -20,7 +20,7 @@ namespace Potestas
     {
         IEnergyObservationProcessor<IEnergyObservation> CreateProcessor();
 
-        IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer();
+        IEnergyObservationAnalyzer<IEnergyObservation> CreateAnalizer();
 
         IEnergyObservationStorage<IEnergyObservation> CreateStorage();
     }
