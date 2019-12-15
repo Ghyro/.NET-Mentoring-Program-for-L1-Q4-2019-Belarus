@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Potestas.Analyzers;
 using Potestas.Interfaces;
 using Potestas.Processors.Save;
 using Potestas.Storages;
@@ -9,9 +9,9 @@ namespace Potestas.ConcreteFactories
     {
         private IEnergyObservationStorage<IEnergyObservation> _storage;
 
-        public IEnergyObservationAnalizer<IEnergyObservation> CreateAnalizer()
+        public IEnergyObservationAnalyzer<IEnergyObservation> CreateAnalizer()
         {
-            return null;
+            return new BsonAnalyzer<IEnergyObservation>();
         }
 
         public IEnergyObservationProcessor<IEnergyObservation> CreateProcessor()

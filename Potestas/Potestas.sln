@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Potestas.Tests", "Potestas.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Potestas.Apps.Terminal", "Potestas.Apps.Terminal\Potestas.Apps.Terminal.csproj", "{3C3E81BE-F2C2-406D-B75D-599B6527F377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Potestas.WebHTTP", "Potestas.WebHTTP\Potestas.WebHTTP.csproj", "{537DCEE6-12EA-4556-A57D-A3E9407A0430}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Potestas.Web", "Potestas.Web\Potestas.Web.csproj", "{619B3516-BC33-4260-8706-244EA86EC112}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{3C3E81BE-F2C2-406D-B75D-599B6527F377}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C3E81BE-F2C2-406D-B75D-599B6527F377}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C3E81BE-F2C2-406D-B75D-599B6527F377}.Release|Any CPU.Build.0 = Release|Any CPU
-		{537DCEE6-12EA-4556-A57D-A3E9407A0430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{537DCEE6-12EA-4556-A57D-A3E9407A0430}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{537DCEE6-12EA-4556-A57D-A3E9407A0430}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{537DCEE6-12EA-4556-A57D-A3E9407A0430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{619B3516-BC33-4260-8706-244EA86EC112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{619B3516-BC33-4260-8706-244EA86EC112}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{619B3516-BC33-4260-8706-244EA86EC112}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{619B3516-BC33-4260-8706-244EA86EC112}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
