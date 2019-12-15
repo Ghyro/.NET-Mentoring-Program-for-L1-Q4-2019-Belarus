@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using Potestas.Interfaces;
 using Potestas.Observations;
 using Potestas.Storages;
@@ -14,11 +16,13 @@ namespace Potestas.Web.Services
     {
         private readonly IEnergyObservationStorage<IEnergyObservation> _storage;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
 
-        public EnergyObservationService(IEnergyObservationStorage<IEnergyObservation> storage, IMapper mapper)
+        public EnergyObservationService(IEnergyObservationStorage<IEnergyObservation> storage, IMapper mapper, IMemoryCache cache)
         {
             _storage = storage;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<IEnumerable<FlashObservationViewModel>> GetAllObservationsAsync()
@@ -40,6 +44,11 @@ namespace Potestas.Web.Services
                 var observartion = _mapper.Map<FlashObservation>(flashObservation);
 
                 await Task.Run(() => bsonStorage.Add(observartion));
+
+                _cache.Set(flashObservation.Id, flashObservation, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                });
             }
         }
 

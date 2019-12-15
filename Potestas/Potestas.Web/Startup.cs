@@ -4,13 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Potestas.Analyzers;
 using Potestas.Context;
 using Potestas.Interfaces;
@@ -48,11 +53,17 @@ namespace Potestas.Web
             services.AddScoped<IEnergyObservationStorage<IEnergyObservation>, BsonStorage<IEnergyObservation>>();
             services.AddScoped<IEnergyObservationAnalyzer<IEnergyObservation>, BsonAnalyzer<IEnergyObservation>>();
             services.AddScoped<IAnalyzer, Analyzer>();
+
+            services.AddHealthChecks().AddCheck<ApiHealthCheck>("api");
+
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddDebug();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -69,7 +80,10 @@ namespace Potestas.Web
             }
 
             app.UseHttpsRedirection();
-
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = WriteHealthCheckResponse
+            });
             app.UseMvc();
         }
 
@@ -77,6 +91,22 @@ namespace Potestas.Web
         {
             var mapperConfig = new MapperConfiguration(m => m.AddProfile(new EnergyObservationMapper()));
             return mapperConfig.CreateMapper();
+        }
+
+        private static Task WriteHealthCheckResponse(HttpContext httpContext,
+            HealthReport result)
+        {
+            httpContext.Response.ContentType = "application/json";
+            var json = new JObject(
+                new JProperty("status", result.Status.ToString()),
+            new JProperty("result", new JObject(result.Entries.Select(pair =>
+                new JProperty(pair.Key, new JObject(
+                    new JProperty("status", pair.Value.Status.ToString()),
+            new JProperty("description", pair.Value.Description),
+            new JProperty("data", new JObject(pair.Value.Data.Select(
+                p => new JProperty(p.Key, p.Value))))))))));
+            return httpContext.Response.WriteAsync(
+                json.ToString(Formatting.Indented));
         }
     }
 }
