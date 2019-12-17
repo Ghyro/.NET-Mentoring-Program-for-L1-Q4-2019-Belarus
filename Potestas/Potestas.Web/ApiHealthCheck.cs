@@ -25,10 +25,15 @@ namespace Potestas.Web
             var isAvailable = CheckDataBaseConnection();
 
             if (isAvailable)
-                Logger.LogCritical("Impossible to get database info. Check connection.");
-
-            return Task.FromResult(isAvailable ? HealthCheckResult.Healthy("Database connection is available for now")
-                : HealthCheckResult.Unhealthy("Database connection is unavailable for now"));
+            {
+               Logger.LogInformation("Database connection is available for now");
+               return Task.FromResultHealthCheckResult.Healthy("Database connection is available for now"));)
+            }
+            else
+            {
+                Logger.LogCritical("Impossible to get database info. Check connection."); 
+                return Task.FromResultHealthCheckResult.Unhealthy("Database connection is unavailable for now"));)
+            }   
         }
 
         private static bool CheckDataBaseConnection()
